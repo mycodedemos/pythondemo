@@ -33,3 +33,10 @@ def test():
             'json': request.json
         }
     )
+
+
+@support_bp.route('/download', methods=['GET'])
+def down():
+    '''下载'''
+    res = make_response(send_file('/static/apple-app-site-association'))
+    return res

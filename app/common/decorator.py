@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''flask功能片段'''
+'''装饰器'''
 __author__ = "wenxiaoning(wenxiaoning@gochinatv.com)"
 __copyright__ = "Copyright of GoChinaTV (2017)."
 
