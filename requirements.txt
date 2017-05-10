@@ -60,3 +60,6 @@ requests == 2.13.0
 
 # config.py: 7
 requests_aws4auth == 0.9
+
+# src/common/security_aes.py: 7
+pycrypto == 2.6.1

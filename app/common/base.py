@@ -18,6 +18,7 @@ from app.config import app
 from app.config import db
 from app.config import env_config
 from app.config import snowflake
+from app.common.security import AESecurity
 from urllib.parse import urlparse
 
 URL_CONFIG = urlparse(env_config.SQLALCHEMY_DATABASE_URI)
@@ -219,3 +220,33 @@ class BaseResponse(BaseModel):
     @classmethod
     def return_forbidden(cls, message='Forbidden'):
         return cls.return_response(status=403, message=message)
+
+
+class UserSecurity():
+    KEY = 'b8d4471654c7330c'
+    aes = AESecurity(KEY)
+
+    @classmethod
+    def generate_authorization(cls, user_id, **params):
+        '''用户id加密'''
+        data = '{};{}'.format(user_id, int(time.time()))
+        return cls.aes.encrypt(data)
+
+    @classmethod
+    def get_user_id(cls, authorization):
+        '''从加密信息中过去用户'''
+        try:
+            if not authorization or authorization == 'null':
+                return None
+            data = cls.aes.decrypt(authorization)
+            return data.split(';')[0]
+        except BaseException as e:
+            app.logger.error(e)
+            return None
+
+
+if __name__ == '__main__':
+    id = BaseModel.generate_id()
+    token = UserSecurity.generate_authorization(id)
+    print(token)
+    print(UserSecurity.get_user_id(token))

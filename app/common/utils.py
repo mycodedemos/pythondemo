@@ -6,7 +6,6 @@ __copyright__ = "Copyright of GoChinaTV (2017)."
 
 import re
 import random
-import hashlib
 
 RE_CHINESE = re.compile(u"[\u4e00-\u9fa5]+")  # 正则查找中文
 RE_ENGLISH = re.compile(u"[A-Za-z]+")  # 正则查找英文
@@ -19,15 +18,6 @@ STR = [
     'o', 'p', 'q', 'r', 's', 't',
     'u', 'v', 'w', 'x', 'y', 'z'
 ]
-
-
-def md5(str):
-    """
-    计算字符的md5摘要
-    :param str:
-    :return:
-    """
-    return hashlib.md5(str).hexdigest()
 
 
 def find_chinese(str):
