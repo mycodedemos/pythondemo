@@ -13,6 +13,8 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import import_string
 from werkzeug.contrib.fixers import ProxyFix
 
+from app.common.id import Snowflake
+
 CONFIG_NAME_MAPPER = {
     'local': 'app.local_config.LocalConfig',
     'product': 'app.local_config.ProductionConfig',
@@ -173,3 +175,4 @@ def create_app(flask_config_name=None):
 
 app, env_config = create_app()
 db = SQLAlchemy(app)
+snowflake = Snowflake(0)

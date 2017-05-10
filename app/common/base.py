@@ -17,6 +17,7 @@ import time
 from app.config import app
 from app.config import db
 from app.config import env_config
+from app.config import snowflake
 from urllib.parse import urlparse
 
 URL_CONFIG = urlparse(env_config.SQLALCHEMY_DATABASE_URI)
@@ -69,19 +70,7 @@ class BaseModel(object):
     def generate_id(cls):
         """生成id"""
         table_name = cls.__tablename__
-        if not table_name:
-            return None
-
-        if table_name not in ['user', 'circle', 'article', 'comment', 'tag']:
-            return None
-
-        sql = "SELECT func_gen_auto_id(0,%s) as id;"
-
-        res = BaseDB.query(sql, [table_name])
-        if not res:
-            return None
-
-        return res[0]['id']
+        return 'A{}'.format(snowflake.generate())
 
     @classmethod
     def create(cls, **params):
