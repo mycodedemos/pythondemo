@@ -14,9 +14,9 @@ import json
 import pymysql.cursors
 import time
 
-from api import app
-from api import db
-from api import env_config
+from app.config import app
+from app.config import db
+from app.config import env_config
 from urllib.parse import urlparse
 
 URL_CONFIG = urlparse(env_config.SQLALCHEMY_DATABASE_URI)

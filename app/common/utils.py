@@ -159,7 +159,7 @@ def generate_body(sort='desc', _script=None, match=None, term=None,
     return body
 
 
-def filter_json(json, **params):
+def filter_dict(json, **params):
     '''
     过滤json数据
     :param json:

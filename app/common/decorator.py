@@ -12,7 +12,7 @@ from flask import g
 from functools import wraps
 from functools import update_wrapper
 
-from api.common.base import BaseResponse
+from app.common.base import BaseResponse
 
 
 def jsonp(func):

@@ -4,6 +4,22 @@
 __author__ = "wenxiaoning(371032668@qq.com)"
 __copyright__ = "Copyright of hopapapa (2017)."
 
+import os
+import time
+import logging
+
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.utils import import_string
+from werkzeug.contrib.fixers import ProxyFix
+
+CONFIG_NAME_MAPPER = {
+    'local': 'app.local_config.LocalConfig',
+    'product': 'app.local_config.ProductionConfig',
+    'dev': 'app.local_config.DevelopmentConfig',
+    'test': 'app.local_config.TestingConfig'
+}
+
 
 class BaseConfig(object):
     DEBUG = False
@@ -127,3 +143,33 @@ class BaseConfig(object):
 
     # 401   没有权限
     # 403   无法执行操作
+
+
+def create_app(flask_config_name=None):
+    """
+    创建配置
+    :return:
+    """
+    app = Flask(__name__)
+    app.wsgi_app = ProxyFix(app.wsgi_app)
+    env_flask_config_name = os.getenv('FLASK_CONFIG')
+
+    if not env_flask_config_name and flask_config_name is None:
+        flask_config_name = 'dev'
+    elif flask_config_name is None:
+        flask_config_name = env_flask_config_name
+
+    config_name = CONFIG_NAME_MAPPER[flask_config_name]
+
+    app.config.from_object(config_name)
+
+    print('-------------------------init app-------------------------')
+    env_config = import_string(config_name)
+
+    logging.basicConfig(
+        filename=env_config.METRICS_LOG_FILE, level=logging.ERROR)
+    return app, env_config
+
+
+app, env_config = create_app()
+db = SQLAlchemy(app)
