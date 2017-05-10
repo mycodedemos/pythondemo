@@ -38,28 +38,7 @@ def find_english(str):
     return re.findall(RE_ENGLISH, str)
 
 
-def make_paginate(data, total_size, page, size):
-    """
-    生成返回数据
-    :param list:
-    :param total_size:
-    :param page:
-    :param size:
-    :return:
-    """
-    total_page = total_size / size
-    yu = total_size % size
-    if yu > 0:
-        total_page += 1
 
-    res = {
-        "items": data,
-        "cur_page": int(page),
-        "total_items": total_size,
-        "total_pages": total_page,
-        "item_per_page": size
-    }
-    return res
 
 
 def reduplicate(list):

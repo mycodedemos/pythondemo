@@ -8,6 +8,7 @@ from flask import request
 
 from app.config import app
 from app.config import BaseConfig
+from app.common.base import UserSecurity
 from app.api.support.views import support_bp
 
 
@@ -20,7 +21,7 @@ def before_request():
         )
     )
 
-    g.user_id = None
+    g.user_id = get_login_user_id()
     g.user = None
 
 
@@ -35,6 +36,21 @@ def after_request(response):
     app.logger.debug(req_info + ":" + str(elapsed))
 
     return response
+
+
+def get_login_user_id():
+    '''从request中过去user_id'''
+    headers = request.headers
+
+    callback = request.args.get('callback', False)
+    if callback:
+        headers = request.cookies
+
+    token = headers.get(BaseConfig.HEAD_AUTHORIZATION)
+    if not token:
+        return None
+    # 获取用户id
+    return UserSecurity.get_user_id(token)
 
 
 URL_PREFIX = BaseConfig.APPLICATION_ROOT

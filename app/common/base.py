@@ -221,6 +221,30 @@ class BaseResponse(BaseModel):
     def return_forbidden(cls, message='Forbidden'):
         return cls.return_response(status=403, message=message)
 
+    @classmethod
+    def make_paginate(cls, data, total, page, per_page):
+        """
+        生成返回数据
+        :param list:
+        :param total_size:
+        :param page:
+        :param size:
+        :return:
+        """
+        total_page = total / per_page
+        yu = total % per_page
+        if yu > 0:
+            total_page += 1
+
+        res = {
+            "items": data,
+            "page": int(page),
+            "total": total,
+            "total_pages": total_page,
+            "per_page": per_page
+        }
+        return res
+
 
 class UserSecurity():
     KEY = 'b8d4471654c7330c'

@@ -58,5 +58,5 @@ if __name__ == '__main__':
     aes = AESecurity(key)
     id = Md5.encrypt('1')
 
-    res = aes.encrypt('{};{}'.format(id,time.time()))
+    res = aes.encrypt('{};{}'.format(id, time.time()))
     print(res)
