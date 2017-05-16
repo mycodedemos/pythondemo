@@ -10,6 +10,7 @@ from app.config import app
 from app.config import BaseConfig
 from app.common.base import UserSecurity
 from app.api.support.views import support_bp
+from app.api.image.views import image_bp
 
 
 @app.before_request
@@ -23,6 +24,9 @@ def before_request():
 
     g.user_id = get_login_user_id()
     g.user = None
+
+    # ip
+    g.ip = request.remote_addr
 
 
 @app.after_request
@@ -55,3 +59,4 @@ def get_login_user_id():
 
 URL_PREFIX = BaseConfig.APPLICATION_ROOT
 app.register_blueprint(support_bp)
+app.register_blueprint(image_bp, url_prefix=URL_PREFIX)

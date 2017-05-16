@@ -42,66 +42,20 @@ class BaseConfig(object):
     ES_WEIGHT_AUDIO = 8000
     ES_WEIGHT_ARTICLE = 7000
 
-    TYPE_USER = 1  # 用户
-    TYPE_RES = 2  # 资源
-    TYPE_COMMENT = 3  # 评论
-    TYPE_IMAGE = 4  # 图片
-    TYPE_ARTICLE = 6  # 文章
-    TYPE_VIDEO_PLAY = 7  # 视频点播
-    TYPE_VIDEO_LIVE = 8  # 视频直播
-    TYPE_AUDIO = 11  # 音频
-    TYPE_COLLECTION = 12  # 集合
-    TYPE_PUSH = 13  # 推送
-    TYPE_ACTION_DELETE = 21  # 删除
-    TYPE_ACTION_LOGIN = 22  # 登录
-    TYPE_ACTION_UPDATE = 23  # 修改用户信息
-    TYPE_ACTION_VIEW_HOME_PAGE_SHOW = 24  # 观看弹框
-    TYPE_ACTION_VIEW = 27  # 观看
-    TYPE_ACTION_UPLOAD = 28  # 上传
-    TYPE_USER_ANONYMOUS = 51  # 匿名用户
-    TYPE_USER_NORMAL = 52  # 正常用户
-    TYPE_VIDEO_STATUS_NORMAL = 71  # 正常
-    TYPE_VIDEO_STATUS_TRANSCODING = 72  # 转码中
-    TYPE_HOME_PAGE_CAROUSEL = 81  # 首页轮播图
-    TYPE_HOME_PAGE_LIST = 82  # 首页列表
-    TYPE_HOME_PAGE = 83  # 首页
-    TYPE_HOME_PAGE_DAILY_SHOW = 84  # 首页每天展示的
-    TYPE_HOME_PAGE_URL = 85  # 首页h5
-    TYPE_HOME_PAGE_RECOMMEND = 86  # 首页推荐位
-    TYPE_HOME_PAGE_HOT = 87  # 热门内容
-    TYPE_ATTENTION_STATUS_NO = 91  # 未关注
-    TYPE_ATTENTION_STATUS_YES = 92  # 已关注
-    TYPE_ATTENTION_STATUS_EACH_OTHER = 93  # 互相关注
-    TYPE_ATTENTION_STATUS_LIST = 94  # 关注列表
-    TYPE_ATTENTION_STATUS_BY_LIST = 95  # 被关注列表
-    TYPE_OPEN_CLIENT = 221  # 打开应用
-    TYPE_OPEN_URL = 222  # 打开连接
-    TYPE_OPEN_DETAIL = 223  # 打开详情
-
-    ES_ENUM = {
-        TYPE_USER: {"id": "res_id", "doc_type": ES_TYPE_USER,
-                    "weight": ES_WEIGHT_USER},
-        TYPE_VIDEO_PLAY: {"id": "res_id", "doc_type": ES_TYPE_VIDEO,
-                          "weight": ES_WEIGHT_VIDEO},
-        TYPE_ARTICLE: {"id": "res_id", "doc_type": ES_TYPE_ARTICLE,
-                       "weight": ES_WEIGHT_ARTICLE},
-        TYPE_AUDIO: {"id": "res_id", "doc_type": ES_TYPE_AUDIO,
-                     "weight": ES_WEIGHT_AUDIO},
-        TYPE_COLLECTION: {"id": "res_id", "doc_type": ES_TYPE_COLLECTION,
-                          "weight": ES_WEIGHT_COLLECTION}
-    }
+    TYPE_ITEM_USER = 1
+    TYPE_ITEM_IMAGE = 2
+    TYPE_ACTION_VIEW = 21
 
     TYPE_DEL = 1
     TYPE_UNDEL = 0
 
     DEFAULT_PAGE = 1
-    DEFAULT_PER_PAGE = 12
+    DEFAULT_PER_PAGE = 10
     DEFAULT_NO_PAGINATE_PER_PAGE = 10000
     DEFAULT_AGE = 18
     DEFAULT_GENDER = 0
     DEFAULT_IS_DEL = 0
     DEFAULT_PORTRAIT = 'http://pic.hopapapa.com/static/Mask@2x.png'
-    DEFAULT_USER_STATUS = TYPE_USER_ANONYMOUS  # 匿名用户
 
     ARTICLE_HTML_URL_FORMAT = 'http://www.hopapapa.com/fabu/news.html?id={}'
 
@@ -155,24 +109,15 @@ def create_app(flask_config_name=None):
     app = Flask(__name__)
     app.wsgi_app = ProxyFix(app.wsgi_app)
     env_flask_config_name = os.getenv('FLASK_CONFIG')
-
-    if not env_flask_config_name and flask_config_name is None:
-        flask_config_name = 'dev'
-    elif flask_config_name is None:
-        flask_config_name = env_flask_config_name
-
-    config_name = CONFIG_NAME_MAPPER[flask_config_name]
-
+    config_mapper_name = flask_config_name or env_flask_config_name or 'local'
+    config_name = CONFIG_NAME_MAPPER[config_mapper_name]
     app.config.from_object(config_name)
-
     print('-------------------------init app-------------------------')
-    env_config = import_string(config_name)
-
-    logging.basicConfig(
-        filename=env_config.METRICS_LOG_FILE, level=logging.ERROR)
-    return app, env_config
+    logging.basicConfig(filename=app.config['METRICS_LOG_FILE'],
+                        level=logging.ERROR)
+    return app
 
 
-app, env_config = create_app()
+app = create_app()
 db = SQLAlchemy(app)
 snowflake = Snowflake(0)

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # ! -*- coding:utf-8 -*-
 """base信息"""
+from sqlalchemy import desc
+
 __author__ = "wenxiaoning(wenxiaoning@gochinatv.com)"
 __copyright__ = "Copyright of GoChinaTV (2017)."
 
@@ -16,12 +18,11 @@ import time
 
 from app.config import app
 from app.config import db
-from app.config import env_config
 from app.config import snowflake
 from app.common.security import AESecurity
 from urllib.parse import urlparse
 
-URL_CONFIG = urlparse(env_config.SQLALCHEMY_DATABASE_URI)
+URL_CONFIG = urlparse(app.config['SQLALCHEMY_DATABASE_URI'])
 
 
 class BaseModel(object):
@@ -67,6 +68,9 @@ class BaseModel(object):
             rel = self.RELATIONSHIPS_TO_DICT
         return json.dumps(self.to_dict(rel), default=extended_encoder)
 
+    def __str__(self):
+        return self.to_json()
+
     @classmethod
     def generate_id(cls):
         """生成id"""
@@ -84,30 +88,38 @@ class BaseModel(object):
     def query_item(cls, **params):
         if not params:
             params = {}
-        params['is_available'] = 1
+        params['is_del'] = 0
         return cls.query.filter_by(**params).first()
+
+    @classmethod
+    def query_paginate(cls, page, per_page, **params):
+        if not params:
+            params = {}
+        params['is_del'] = 0
+        return cls.query.filter_by(**params).order_by(
+            desc(cls.create_ts)).paginate(page, per_page, False)
 
     @classmethod
     def query_items(cls, **params):
         if not params:
             params = {}
-        params['is_available'] = 1
+        params['is_del'] = 0
         return cls.query.filter_by(**params).all()
 
     @classmethod
     def query_count(cls, **params):
         if not params:
             params = {}
-        params['is_available'] = 1
+        params['is_del'] = 0
         return cls.query.filter_by(**params).count()
 
     @classmethod
     def delete(cls, **params):
         if not params:
             params = {}
-        params['is_available'] = 1
+        params['is_del'] = 0
         item = cls.query.filter_by(**params).first()
-        item.is_available = 0
+        item.is_available = 1
         return item
 
 
@@ -231,7 +243,7 @@ class BaseResponse(BaseModel):
         :param size:
         :return:
         """
-        total_page = total / per_page
+        total_page = total // per_page
         yu = total % per_page
         if yu > 0:
             total_page += 1
@@ -244,6 +256,12 @@ class BaseResponse(BaseModel):
             "per_page": per_page
         }
         return res
+
+class BaseRequest():
+    @classmethod
+    def get_param_int(cls, params, key, default=0):
+        res = params.get(key, default)
+        return int(res)
 
 
 class UserSecurity():

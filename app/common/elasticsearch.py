@@ -12,12 +12,11 @@ from elasticsearch import TransportError
 from elasticsearch import helpers
 from elasticsearch import RequestsHttpConnection
 from app.config import app
-from app.config import env_config
 
 es = Elasticsearch(
-    hosts=[{'host': env_config.ES_HOST, 'port': env_config.ES_PORT}],
-    http_auth=env_config.ES_HTTP_AUTH,
-    use_ssl=env_config.ES_USE_SSL,
+    hosts=[{'host': app.config['ES_HOST'], 'port': app.config['ES_PORT']}],
+    http_auth=app.config['ES_HTTP_AUTH'],
+    use_ssl=app.config['ES_USE_SSL'],
     verify_certs=True,
     connection_class=RequestsHttpConnection
 )

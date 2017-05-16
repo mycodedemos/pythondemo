@@ -10,6 +10,7 @@ import random
 RE_CHINESE = re.compile(u"[\u4e00-\u9fa5]+")  # 正则查找中文
 RE_ENGLISH = re.compile(u"[A-Za-z]+")  # 正则查找英文
 
+
 STR = [
     '0', '1', '2', '3', '4', '5',
     '6', '7', '8', '9', 'a', 'b',
@@ -148,3 +149,28 @@ def filter_dict(json, **params):
         for item in source_exclude:
             del json[item]
         return json
+
+
+def check_back_card(card_num):
+    """检查银行卡的合法性"""
+    total = 0
+    even = True
+
+    card_num = list(card_num)
+    card_num.reverse()
+    check_num = card_num[0]
+    card_num.pop(0)
+
+    for item in card_num:
+        item = int(item)
+        if even:
+            item <<= 1
+
+        if item > 9:
+            item -= 9
+
+        total += item
+        even = not even
+
+    return int(check_num) is (10 - (total % 10)) % 10
+
