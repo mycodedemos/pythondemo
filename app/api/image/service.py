@@ -75,10 +75,16 @@ def update_md5():
         try:
             md5 = Md5.encrypt_by_url(image.url)
             print(md5)
-            Image.update_by_id(
-                id=image.id,
-                md5=md5
-            )
+            if md5 is '2923b250a3660c034aa7831d5e6d7f3c':
+                Image.update_by_id(
+                    id=image.id,
+                    is_del=1
+                )
+            else:
+                Image.update_by_id(
+                    id=image.id,
+                    md5=md5
+                )
         except BaseException as e:
             print(e, image.id)
             Image.update_by_id(
@@ -122,5 +128,5 @@ def update_length():
 
 
 if __name__ == '__main__':
-    update_md5()
+    update_length()
     pass

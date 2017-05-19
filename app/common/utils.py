@@ -10,7 +10,6 @@ import random
 RE_CHINESE = re.compile(u"[\u4e00-\u9fa5]+")  # 正则查找中文
 RE_ENGLISH = re.compile(u"[A-Za-z]+")  # 正则查找英文
 
-
 STR = [
     '0', '1', '2', '3', '4', '5',
     '6', '7', '8', '9', 'a', 'b',
@@ -37,9 +36,6 @@ def find_english(str):
     :return:
     """
     return re.findall(RE_ENGLISH, str)
-
-
-
 
 
 def reduplicate(list):
@@ -156,12 +152,11 @@ def check_back_card(card_num):
     total = 0
     even = True
 
-    card_num = list(card_num)
-    card_num.reverse()
-    check_num = card_num[0]
-    card_num.pop(0)
+    if isinstance(card_num, int):
+        card_num = str(card_num)
 
-    for item in card_num:
+    check_num = card_num[-1]
+    for item in card_num[-2::-1]:
         item = int(item)
         if even:
             item <<= 1
@@ -174,3 +169,50 @@ def check_back_card(card_num):
 
     return int(check_num) is (10 - (total % 10)) % 10
 
+
+def check_identity_card(card):
+    wi = ["7", "9", "10", "5", "8", "4", "2", "1", "6", "3", "7", "9", "10",
+          "5", "8", "4", "2"]
+    total = 0
+    card = list(card)
+    index = 0
+    for item in card:
+        total += ord(item) * int(wi[index])
+        index += 1
+
+    t = total % 11
+    r = (12 - t) % 11
+    if r == 10:
+        return "X"
+    else:
+        return r
+
+
+if __name__ == '__main__':
+    # print(check_back_card('6225768741961625'))
+    # print(check_identity_card('132201199108297010'))
+    # print(check_identity_card('6225768741961625'))
+    # print(vars())
+    # print(vars().get('get_random_str'))
+    print(vars().get('get_random_str').__dict__)
+    print(eval('get_random_str(2)'))
+    pass
+#
+#
+#
+# static String getCheckCode(String idCard){
+#         static String[] Wi = { "7", "9", "10", "5", "8", "4", "2", "1", "6", "3", "7","9", "10", "5", "8", "4", "2" };
+#         int sum = 0;
+#         for( int i = 0 ; i < 17 ; i ++)
+#         {
+#             sum = sum + Integer.parseInt(String.valueOf(idCard.charAt(i))) * Integer.parseInt(String.valueOf(Wi[i]));
+#         }
+#         int T  = sum % 11;
+#         int R = (12 -T) % 11;
+#         if( R == 10 )
+#             return "X";
+#         else {
+#             return String.valueOf(R);
+#         }
+#     }
+#
