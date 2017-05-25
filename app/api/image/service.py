@@ -16,27 +16,34 @@ from sqlalchemy import desc
 
 
 def crawler_data():
-    for i in range(1, 120):
-        image = Image.query.filter_by(is_del=0, source='juhe').order_by(
-            Image.publish_ts).first()
-        res = Juhe.get_img_by_time(image.publish_ts, 'desc', 1, 20)
-        data = res['result']['data']
+    for key in Juhe.KEYS:
+        jh = Juhe(key)
 
-        for item in data:
-            third_id = item['hashId']
-            args = {
-                "third_id": third_id
-            }
-            image = Image.query_item(**args)
-            if not image:
-                args['id'] = Image.generate_id()
-                args['content'] = item['content']
-                args['url'] = item['url']
-                args['publish_ts'] = item['unixtime']
-                try:
-                    Image.create(**args)
-                except BaseException as e:
-                    print(e)
+        for i in range(1, 120):
+            image = Image.query.filter_by(is_del=0, source='juhe').order_by(
+                Image.publish_ts).first()
+
+            res = jh.get_img_by_time(image.publish_ts, 'desc', 1, 20)
+            result = res['result']
+            if not result:
+                return
+            data = res['result']['data']
+
+            for item in data:
+                third_id = item['hashId']
+                args = {
+                    "third_id": third_id
+                }
+                image = Image.query_item(**args)
+                if not image:
+                    args['id'] = Image.generate_id()
+                    args['content'] = item['content']
+                    args['url'] = item['url']
+                    args['publish_ts'] = item['unixtime']
+                    try:
+                        Image.create(**args)
+                    except BaseException as e:
+                        print(e)
 
 
 def crawler_jisu_data():
@@ -129,4 +136,5 @@ def update_length():
 
 if __name__ == '__main__':
     update_length()
+    remove_data()
     pass
