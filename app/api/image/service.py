@@ -15,35 +15,34 @@ from app.common.base import BaseDB
 from sqlalchemy import desc
 
 
-def crawler_data():
-    for key in Juhe.KEYS:
-        jh = Juhe(key)
+def crawler_data(key):
+    jh = Juhe(key)
 
-        for i in range(1, 120):
-            image = Image.query.filter_by(is_del=0, source='juhe').order_by(
-                Image.publish_ts).first()
+    for i in range(1, 120):
+        image = Image.query.filter_by(is_del=0, source='juhe').order_by(
+            Image.publish_ts).first()
 
-            res = jh.get_img_by_time(image.publish_ts, 'desc', 1, 20)
-            result = res['result']
-            if not result:
-                return
-            data = res['result']['data']
+        res = jh.get_img_by_time(image.publish_ts, 'desc', 1, 20)
+        result = res['result']
+        if not result:
+            return
+        data = res['result']['data']
 
-            for item in data:
-                third_id = item['hashId']
-                args = {
-                    "third_id": third_id
-                }
-                image = Image.query_item(**args)
-                if not image:
-                    args['id'] = Image.generate_id()
-                    args['content'] = item['content']
-                    args['url'] = item['url']
-                    args['publish_ts'] = item['unixtime']
-                    try:
-                        Image.create(**args)
-                    except BaseException as e:
-                        print(e)
+        for item in data:
+            third_id = item['hashId']
+            args = {
+                "third_id": third_id
+            }
+            image = Image.query_item(**args)
+            if not image:
+                args['id'] = Image.generate_id()
+                args['content'] = item['content']
+                args['url'] = item['url']
+                args['publish_ts'] = item['unixtime']
+                try:
+                    Image.create(**args)
+                except BaseException as e:
+                    print(e)
 
 
 def crawler_jisu_data():
@@ -82,11 +81,8 @@ def update_md5():
         try:
             md5 = Md5.encrypt_by_url(image.url)
             print(md5)
-            if md5 is '2923b250a3660c034aa7831d5e6d7f3c':
-                Image.update_by_id(
-                    id=image.id,
-                    is_del=1
-                )
+            if md5 == '2923b250a3660c034aa7831d5e6d7f3c':
+                Image.delete(id=image.id)
             else:
                 Image.update_by_id(
                     id=image.id,
@@ -101,7 +97,11 @@ def update_md5():
 
 
 def remove_data():
-    sql = "select * from (select md5,count(0) as count from image where is_del = 0 and md5 > '' group by md5 order by count desc) as imd5 where imd5.count >1;"
+    sql = "select * from " \
+          "(select md5,count(0) as count from image " \
+          "where is_del = 0 and md5 > '' " \
+          "group by md5 order by count desc) as imd5 " \
+          "where imd5.count >1;"
     res = BaseDB.query(sql, [])
 
     for item in res:
@@ -135,6 +135,8 @@ def update_length():
 
 
 if __name__ == '__main__':
-    update_length()
-    remove_data()
+    crawler_data(Juhe.KEY)
+    crawler_data(Juhe.KEY2)
+    # update_length()
+    # remove_data()
     pass

@@ -35,10 +35,19 @@ class BaseModel(object):
     def __iter__(self):
         return self.to_dict().iteritems()
 
+    def extended_encoder(self, x):
+        if isinstance(x, datetime):
+            return int(x.timestamp())
+        if isinstance(x, UUID):
+            return str(x)
+        if isinstance(x, date):
+            return x.isoformat()
+        return x
+
     def to_dict(self, rel=None, backref=None):
         if rel is None:
             rel = self.RELATIONSHIPS_TO_DICT
-        res = {column.key: getattr(self, attr)
+        res = {column.key: self.extended_encoder(getattr(self, attr))
                for attr, column in self.__mapper__.c.items()}
         if rel:
             for attr, relation in self.__mapper__.relationships.items():
@@ -55,21 +64,13 @@ class BaseModel(object):
                                          for i in value]
         return res
 
-    def to_json(self, rel=None):
-        def extended_encoder(x):
-            if isinstance(x, datetime):
-                return x.isoformat()
-            if isinstance(x, UUID):
-                return str(x)
-            if isinstance(x, date):
-                return x.isoformat()
-
+    def to_json_str(self, rel=None):
         if rel is None:
             rel = self.RELATIONSHIPS_TO_DICT
-        return json.dumps(self.to_dict(rel), default=extended_encoder)
+        return json.dumps(self.to_dict(rel), default=self.extended_encoder)
 
     def __str__(self):
-        return self.to_json()
+        return self.to_json_str()
 
     @classmethod
     def generate_id(cls):
@@ -115,11 +116,14 @@ class BaseModel(object):
 
     @classmethod
     def delete(cls, **params):
-        if not params:
-            params = {}
-        params['is_del'] = 0
-        item = cls.query.filter_by(**params).first()
-        item.is_available = 1
+        item = cls.query.filter_by(**params).update(dict(is_del=1))
+        db.session.commit()
+        return item
+
+    @classmethod
+    def update_by_id(cls, id, **params):
+        item = cls.query.filter_by(id=id,is_del=0).update(params)
+        db.session.commit()
         return item
 
 
@@ -256,6 +260,7 @@ class BaseResponse(BaseModel):
             "per_page": per_page
         }
         return res
+
 
 class BaseRequest():
     @classmethod

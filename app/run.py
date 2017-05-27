@@ -9,6 +9,7 @@ from flask import request
 from app.config import app
 from app.config import BaseConfig
 from app.common.base import UserSecurity
+from app.common.base import BaseResponse
 from app.api.support.views import support_bp
 from app.api.image.views import image_bp
 
@@ -40,6 +41,11 @@ def after_request(response):
     app.logger.debug(req_info + ":" + str(elapsed))
 
     return response
+
+@app.errorhandler(Exception)
+def app_error_handler(e):
+    app.logger.error(e)
+    return BaseResponse.return_internal_server_error()
 
 
 def get_login_user_id():

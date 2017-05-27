@@ -6,19 +6,11 @@ __copyright__ = "Copyright of GoChinaTV (2017)."
 
 from app.common.base import BaseModel
 from app.common.security import Md5
+from app.api.image.models import Image
 
 import requests
 
 if __name__ == '__main__':
-    # for i in range(0, 10):
-    #     print(BaseModel.generate_id())
-
-    # res = requests.get(
-    #     'http://juheimg.oss-cn-hangzhou.aliyuncs.com/joke/201608/12/96684803CA746F454BBF3509C8FF5FBF.gif')
-    # print(type(res.rea))
-
-    print(Md5.encrypt_by_url(
-        'http://juheimg.oss-cn-hangzhou.aliyuncs.com/joke/201608/12/96684803CA746F454BBF3509C8FF5FBF.gif'))
-    print(
-        Md5.encrypt_by_file('/Users/wxnacy/PycharmProjects/pythondemo/run.py'))
+    item = Image.query_item(id='A37286179892101129')
+    print(item)
     pass
