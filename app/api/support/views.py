@@ -8,6 +8,8 @@ import sys
 import os
 
 from app.common.base import BaseResponse
+from app.common.decorator import args_required
+from app.common.decorator import headers_required
 
 from flask import request
 from flask import Blueprint
@@ -17,7 +19,9 @@ from flask import send_file
 support_bp = Blueprint('support', __name__)
 
 
-@support_bp.route('/test', methods=['GET', 'POST'])
+@support_bp.route('/test', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@args_required('id', 'name')
+@headers_required('version')
 def test():
     '''一级页面接口'''
     print(request.method)
@@ -26,13 +30,11 @@ def test():
 
     # application / x - www - form - urlencoded
     # application / x - www - form - urlencoded
-
-    return BaseResponse.return_success(
-        data={
-            'form': request.form,
-            'json': request.json
-        }
-    )
+    res = {
+        'form': request.form,
+        'json': request.json
+    }
+    return BaseResponse.return_success(res)
 
 
 @support_bp.route('/download', methods=['GET'])

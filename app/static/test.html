@@ -18,12 +18,19 @@
 <script src="/static/js/element/index.js"></script>
 <script src="/static/js/utils.js"></script>
 <script>
-    console.log(utils.getValue('id'));
-    console.log(utils.getValue('collection_id'));
-    console.log(utils.getValue('name'));
-    console.log(utils.getValue('passwd'));
-
     $(function () {
+        $.ajax({
+            url:"http://localhost:8001/test",
+            type:"PUT",
+            contentType:"application/json",
+            dateType:"json",
+            data:JSON.stringify({
+                name:"ss"
+            }),
+            success:function (data) {
+                console.log(data)
+            }
+        })
     });
     function initData() {
 

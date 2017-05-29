@@ -137,6 +137,7 @@ def update_length():
 if __name__ == '__main__':
     crawler_data(Juhe.KEY)
     crawler_data(Juhe.KEY2)
-    # update_length()
-    # remove_data()
+    update_length()
+    update_md5()
+    remove_data()
     pass

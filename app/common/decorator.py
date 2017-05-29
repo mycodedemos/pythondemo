@@ -104,11 +104,31 @@ def args_required(*params):
                 _args = request.json
             else:
                 _args = request.args
+            diff = list(params) - dict.fromkeys(list(_args.keys())).keys()
+            if diff:
+                return BaseResponse.return_forbidden(
+                    '{} is necessary'.format(diff))
+            return func(*args, **kwargs)
 
-            for param in params:
-                if param not in _args:
-                    return BaseResponse.return_forbidden(
-                        '{} is necessary'.format(param))
+        return _wrapped
+
+    return _wrapper
+
+
+def headers_required(*params):
+    """
+    检查参数
+    """
+
+    def _wrapper(func):
+        @wraps(func)
+        def _wrapped(*args, **kwargs):
+            _args = request.headers
+            diff = [item[0].upper() + item[1:] for item in
+                    params] - dict.fromkeys(list(_args.keys())).keys()
+            if diff:
+                return BaseResponse.return_forbidden(
+                    '{} is necessary'.format(diff))
             return func(*args, **kwargs)
 
         return _wrapped

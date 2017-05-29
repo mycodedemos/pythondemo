@@ -11,6 +11,7 @@ from uuid import UUID
 from datetime import datetime, date
 from flask import make_response
 from flask import jsonify
+from flask import request
 
 import json
 import pymysql.cursors
@@ -20,6 +21,7 @@ from app.config import app
 from app.config import db
 from app.config import snowflake
 from app.common.security import AESecurity
+from app.common import utils
 from urllib.parse import urlparse
 
 URL_CONFIG = urlparse(app.config['SQLALCHEMY_DATABASE_URI'])
@@ -44,7 +46,7 @@ class BaseModel(object):
             return x.isoformat()
         return x
 
-    def to_dict(self, rel=None, backref=None):
+    def to_dict(self, rel=None, backref=None, **kwargs):
         if rel is None:
             rel = self.RELATIONSHIPS_TO_DICT
         res = {column.key: self.extended_encoder(getattr(self, attr))
@@ -62,7 +64,7 @@ class BaseModel(object):
                 else:
                     res[relation.key] = [i.to_dict(backref=self.__table__)
                                          for i in value]
-        return res
+        return BaseDict(res)
 
     def to_json_str(self, rel=None):
         if rel is None:
@@ -84,6 +86,11 @@ class BaseModel(object):
         db.session.add(item)
         db.session.commit()
         return item
+
+    def create_self(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
 
     @classmethod
     def query_item(cls, **params):
@@ -122,9 +129,13 @@ class BaseModel(object):
 
     @classmethod
     def update_by_id(cls, id, **params):
-        item = cls.query.filter_by(id=id,is_del=0).update(params)
+        item = cls.query.filter_by(id=id, is_del=0).update(params)
         db.session.commit()
         return item
+
+    def update_self(self):
+        db.session.commit()
+        return self
 
 
 class BaseDB():
@@ -267,6 +278,32 @@ class BaseRequest():
     def get_param_int(cls, params, key, default=0):
         res = params.get(key, default)
         return int(res)
+
+    @classmethod
+    def get_arg_int(cls, params, key, default=0):
+        res = params.get(key, default)
+        return int(res)
+
+    @classmethod
+    def get_args(cls):
+        content_type = request.content_type
+        if content_type == 'application/x-www-form-urlencoded':
+            _args = request.form
+        elif content_type == 'application/json':
+            _args = request.json
+        else:
+            _args = request.args
+        return _args
+
+
+class BaseDict(dict):
+    def filter(self, *args, **kwargs):
+        """
+        :param kwargs:
+            source_include
+        :return:
+        """
+        return utils.filter_dict(self, *args, **kwargs)
 
 
 class UserSecurity():

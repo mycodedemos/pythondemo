@@ -125,7 +125,7 @@ def generate_body(sort='desc', _script=None, match=None, term=None,
     return body
 
 
-def filter_dict(json, **params):
+def filter_dict(json, *args, **kwargs):
     '''
     过滤json数据
     :param json:
@@ -133,8 +133,11 @@ def filter_dict(json, **params):
     :param source_include:
     :return:
     '''
-    source_include = params.get('source_include')
-    source_exclude = params.get('source_exclude')
+
+    source_include = kwargs.get('source_include')
+    if args:
+        source_include = list(args)
+    source_exclude = kwargs.get('source_exclude')
 
     temp = {}
     if source_include:

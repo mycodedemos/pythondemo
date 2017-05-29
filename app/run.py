@@ -12,6 +12,7 @@ from app.common.base import UserSecurity
 from app.common.base import BaseResponse
 from app.api.support.views import support_bp
 from app.api.image.views import image_bp
+from app.api.task.views import task_bp
 
 
 @app.before_request
@@ -35,10 +36,10 @@ def after_request(response):
     if not hasattr(g, 'request_start_time'):
         return response
     elapsed = time.time() - g.request_start_time
-    elapsed = int(round(1000 * elapsed))
-    req_info = str(
-        g.request_start_time) + "_" + request.method + "_" + request.url
-    app.logger.debug(req_info + ":" + str(elapsed))
+    # elapsed = int(round(1000 * elapsed))
+    app.logger.debug('{} begin request {} {} cast {} s'.format(
+        g.request_start_time,request.method,request.url,elapsed
+    ))
 
     return response
 
@@ -66,3 +67,4 @@ def get_login_user_id():
 URL_PREFIX = BaseConfig.APPLICATION_ROOT
 app.register_blueprint(support_bp)
 app.register_blueprint(image_bp, url_prefix=URL_PREFIX)
+app.register_blueprint(task_bp, url_prefix=URL_PREFIX)
