@@ -6,7 +6,7 @@
 </head>
 <!-- 引入样式 -->
 <link rel="stylesheet"
-      href="css/element/index.css">
+      href="/static/css/element/index.css">
 
 <body>
 
@@ -14,20 +14,20 @@
 <div id="app">
     <el-menu :default-active="activeNav" class="el-menu-demo"
              mode="horizontal" @select="handleSelect">
-        <el-menu-item index="pages/task/list.html">任务管理</el-menu-item>
+        <el-menu-item index="/static/pages/task/list.html">任务管理</el-menu-item>
         <el-submenu index="3">
             <template slot="title">资源管理</template>
-            <el-menu-item index="pages/audio/list.html">音频管理</el-menu-item>
-            <el-menu-item index="pages/article/list.html">文章管理</el-menu-item>
-            <el-menu-item index="pages/video/list.html">视频管理</el-menu-item>
-            <el-menu-item index="pages/collection/list.html">集合管理</el-menu-item>
+            <el-menu-item index="/static/pages/audio/list.html">音频管理</el-menu-item>
+            <el-menu-item index="/static/pages/article/list.html">文章管理</el-menu-item>
+            <el-menu-item index="/static/pages/video/list.html">视频管理</el-menu-item>
+            <el-menu-item index="/static/pages/collection/list.html">集合管理</el-menu-item>
         </el-submenu>
 
-        <el-menu-item index="pages/user/list.html">用户管理</el-menu-item>
-        <el-menu-item index="pages/push/list.html">推送管理</el-menu-item>
-        <el-menu-item index="pages/image/upload_multi.html">图片管理</el-menu-item>
+        <el-menu-item index="/static/pages/user/list.html">用户管理</el-menu-item>
+        <el-menu-item index="/static/pages/push/list.html">推送管理</el-menu-item>
+        <el-menu-item index="/static/pages/image/upload_multi.html">图片管理</el-menu-item>
     </el-menu>
-    <iframe id="view_iframe" src="pages/task/list.html"
+    <iframe id="view_iframe" src="/static/pages/task/list.html"
             style="width:100%;height: 1000px" frameborder="no"
             border="0"></iframe>
 
@@ -54,7 +54,7 @@
         Main = {
             data() {
                 return {
-                    activeNav: 'pages/task/list.html',
+                    activeNav: '/static/pages/task/list.html',
                     currentRow: null
                 }
             },
