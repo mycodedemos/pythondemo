@@ -124,7 +124,7 @@ function deleteItem(obj, id, params, url) {
         }).then(() => {
             $.ajax({
                 url: url,
-                type: "post",
+                type: "delete",
                 data: params,
                 success: function (data) {
                     console.log(data)

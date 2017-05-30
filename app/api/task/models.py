@@ -16,6 +16,11 @@ from app.common.base import BaseModel
 
 
 class Task(BaseModel, db.Model):
+    class DoneStatus(Enum):
+        undo = 0
+        done = 1
+        under_way = 2
+
     __tablename__ = 'task'
     id = db.Column(db.VARCHAR, primary_key=True)
     user_id = db.Column(db.VARCHAR, default="")
@@ -26,6 +31,7 @@ class Task(BaseModel, db.Model):
     total_day = db.Column(db.INT, default=0)
     begin_day = db.Column(db.DATE)
     end_day = db.Column(db.DATE)
+    done_status = db.Column(db.INT, default=0)
     status_message = db.Column(db.VARCHAR, default="")
     remark = db.Column(db.VARCHAR, default="")
     is_del = db.Column(db.INT, default=0)
@@ -46,12 +52,12 @@ class Task(BaseModel, db.Model):
     def __init__(self, total_work, daily_work, begin_day=date.today(),
                  begin_work=1, **params):
         self.id = params.get('id', self.generate_id())
-        self.total_work = total_work
-        self.daily_work = daily_work
+        self.total_work = int(total_work)
+        self.daily_work = int(daily_work)
         self.begin_day = begin_day if isinstance(begin_day, date) else date(
             int(begin_day.split('-')[0]), int(begin_day.split('-')[1]),
             int(begin_day.split('-')[2]))
-        self.begin_work = begin_work
+        self.begin_work = int(begin_work)
         self.todo_work = self.total_work - self.begin_work + 1
         self.last_day_work = self.todo_work % self.daily_work
 
@@ -59,10 +65,16 @@ class Task(BaseModel, db.Model):
                          (1 if self.last_day_work > 0 else 0)
 
         self.end_day = self.begin_day + timedelta(self.total_day - 1)
+        self.name = params.get('name')
+
+        self.status_message = '{}, 共{}工作量, 每天完成{}, {}天完成, {}开始, {}结束'.format(
+            self.name,self.todo_work,self.daily_work,self.total_day,
+            self.begin_day,self.end_day
+        )
 
         self.remark = params.get('remark')
         self.user_id = params.get('user_id')
-        self.name = params.get('name')
+
 
 
 class TaskDaily(BaseModel, db.Model):
@@ -102,4 +114,7 @@ class TaskDaily(BaseModel, db.Model):
         self.done_work = done_work
         self.done_status = done_status
         self.update_self()
+
+        self.task.done_status = Task.DoneStatus.under_way.value
+        self.task.update_self()
         return self

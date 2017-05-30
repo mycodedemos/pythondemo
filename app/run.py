@@ -5,14 +5,19 @@ import time
 
 from flask import g
 from flask import request
+from flask_restless import APIManager
 
 from app.config import app
+from app.config import db
 from app.config import BaseConfig
 from app.common.base import UserSecurity
 from app.common.base import BaseResponse
+from app.common.base import BaseRequest
 from app.api.support.views import support_bp
 from app.api.image.views import image_bp
 from app.api.task.views import task_bp
+from app.api.task.models import Task
+from app.api.task.models import TaskDaily
 
 
 @app.before_request
@@ -20,7 +25,7 @@ def before_request():
     g.request_start_time = time.time()
     app.logger.debug(
         '{} {}\nargs:{}\nheaders:{}'.format(
-            request.method, request.url, request.args, request.headers
+            request.method, request.url, BaseRequest.get_args(), request.headers
         )
     )
 
@@ -63,8 +68,13 @@ def get_login_user_id():
     # 获取用户id
     return UserSecurity.get_user_id(token)
 
+URL_PREFIX = BaseConfig.APPLICATION_ROOT_RESTFUL
+manager = APIManager(app, flask_sqlalchemy_db=db)
+manager.create_api(Task, url_prefix=URL_PREFIX, methods=['GET'])
 
 URL_PREFIX = BaseConfig.APPLICATION_ROOT
 app.register_blueprint(support_bp)
 app.register_blueprint(image_bp, url_prefix=URL_PREFIX)
 app.register_blueprint(task_bp, url_prefix=URL_PREFIX)
+
+

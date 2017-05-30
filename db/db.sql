@@ -9,6 +9,7 @@ CREATE TABLE `task` (
   `total_day` int(11) NOT NULL DEFAULT '0' COMMENT '每天完成的数量',
   `begin_day` date NOT NULL COMMENT '开始的时间',
   `end_day` date NOT NULL COMMENT '结束的时间',
+  `done_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '完成状态、0：外开始、1：已完成、2：进行中',
   `status_message` varchar(256) DEFAULT '' COMMENT '任务状态信息',
   `remark` varchar(1024) DEFAULT '' COMMENT '备注',
   `is_done` tinyint(1) NOT NULL DEFAULT '0',

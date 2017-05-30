@@ -80,6 +80,8 @@ class BaseConfig(object):
     METRICS_LOG_FILE = './metrics.flask.log'
     # 地址前缀
     APPLICATION_ROOT = '/api/v1'
+    APPLICATION_ROOT_RESTFUL = '/restful/v1'
+
     APPLICATION_ROOT_ADMIN = '/admin/v1'
 
     LETV_USER_UNIQUE = 'n219pmijzi'

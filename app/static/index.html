@@ -14,17 +14,7 @@
 <div id="app">
     <el-menu :default-active="activeNav" class="el-menu-demo"
              mode="horizontal" @select="handleSelect">
-        <el-submenu index="2">
-            <template slot="title">首页管理</template>
-            <el-menu-item index="pages/home_page/list.html?type=81">banner管理
-            </el-menu-item>
-            <el-menu-item index="pages/home_page/list.html?type=82">列表管理
-            </el-menu-item>
-            <el-menu-item index="pages/home_page/list.html?type=84">弹框管理
-            </el-menu-item>
-            <el-menu-item index="pages/home_page/list.html?type=85">静态页管理
-            </el-menu-item>
-        </el-submenu>
+        <el-menu-item index="pages/task/list.html">任务管理</el-menu-item>
         <el-submenu index="3">
             <template slot="title">资源管理</template>
             <el-menu-item index="pages/audio/list.html">音频管理</el-menu-item>
@@ -37,7 +27,7 @@
         <el-menu-item index="pages/push/list.html">推送管理</el-menu-item>
         <el-menu-item index="pages/image/upload_multi.html">图片管理</el-menu-item>
     </el-menu>
-    <iframe id="view_iframe" src="pages/carousel/list.html"
+    <iframe id="view_iframe" src="pages/task/list.html"
             style="width:100%;height: 1000px" frameborder="no"
             border="0"></iframe>
 
@@ -64,7 +54,7 @@
         Main = {
             data() {
                 return {
-                    activeNav: 'pages/home_page/list.html?type=81',
+                    activeNav: 'pages/task/list.html',
                     currentRow: null
                 }
             },

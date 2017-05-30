@@ -44,6 +44,31 @@ def detail(task_id):
     return BaseResponse.return_success(item.to_dict(rel=True))
 
 
+@task_bp.route('/task/<string:task_id>', methods=['DELETE'])
+def delete_task(task_id):
+    '''获取任务'''
+    item = Task.query_item(id=task_id)
+    if not item:
+        return BaseResponse.return_not_found()
+
+    item.delete_self()
+
+    return BaseResponse.return_success()
+
+
+@task_bp.route('/task', methods=['GET'])
+def tasks():
+    '''任务列表'''
+    args = BaseRequest.get_args()
+    page = BaseRequest.get_arg_int(args, 'page', 1)
+    per_page = BaseRequest.get_arg_int(args, 'per_page', 10)
+    paginate = Task.query_paginate(page, per_page)
+    items = paginate.items
+    res = [item.to_dict().filter('id', 'name', 'done_status') for item in items]
+    return BaseResponse.return_success(
+        BaseResponse.make_paginate(res, paginate.total, page, per_page))
+
+
 @task_bp.route('/task_daily/<int:id>', methods=['PUT'])
 @args_required('done_work')
 def done_daily_task(id):
@@ -54,6 +79,9 @@ def done_daily_task(id):
     item = TaskDaily.query_item(id=id)
     if not item:
         return BaseResponse.return_not_found()
+
+    if item.done_status != 0:
+        return BaseResponse.return_forbidden('不可重复做任务')
 
     task = item.task
 

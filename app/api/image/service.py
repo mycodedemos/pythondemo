@@ -19,10 +19,15 @@ def crawler_data(key):
     jh = Juhe(key)
 
     for i in range(1, 120):
-        image = Image.query.filter_by(is_del=0, source='juhe').order_by(
+        image = Image.query.filter(
+            Image.is_del == 0,
+            Image.source == 'juhe',
+            Image.publish_ts > 0
+        ).order_by(
             Image.publish_ts).first()
 
         res = jh.get_img_by_time(image.publish_ts, 'desc', 1, 20)
+        print(res)
         result = res['result']
         if not result:
             return
@@ -135,8 +140,8 @@ def update_length():
 
 
 if __name__ == '__main__':
-    crawler_data(Juhe.KEY)
-    crawler_data(Juhe.KEY2)
+    # crawler_data(Juhe.KEY)
+    # crawler_data(Juhe.KEY2)
     update_length()
     update_md5()
     remove_data()

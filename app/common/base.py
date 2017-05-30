@@ -127,6 +127,11 @@ class BaseModel(object):
         db.session.commit()
         return item
 
+    def delete_self(self):
+        self.is_del = 1
+        db.session.commit()
+        return self
+
     @classmethod
     def update_by_id(cls, id, **params):
         item = cls.query.filter_by(id=id, is_del=0).update(params)
