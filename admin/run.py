@@ -1,27 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''配置信息'''
-__author__ = "wenxiaoning(371032668@qq.com)"
-__copyright__ = "Copyright of hopapapa (2017)."
 
 import time
 
 from flask import g
 from flask import request
-from flask import template_rendered
 from flask_restless import APIManager
 
-from admin.views.article import article_admin_bp
-from app.api.image.views import image_bp
-from app.api.support.views import support_bp
-from app.api.task.models import Task
-from app.api.task.views import task_bp
-from app.common.base import BaseRequest
-from app.common.base import BaseResponse
-from app.common.base import UserSecurity
-from app.config import BaseConfig
 from app.config import app
 from app.config import db
+from app.config import BaseConfig
+from app.common.base import UserSecurity
+from app.common.base import BaseResponse
+from app.common.base import BaseRequest
+from app.api.support.views import support_bp
+from app.api.image.views import image_bp
+from app.api.task.views import task_bp
+from app.api.task.models import Task
+from app.api.task.models import TaskDaily
 
 
 @app.before_request
@@ -47,11 +43,10 @@ def after_request(response):
     elapsed = time.time() - g.request_start_time
     # elapsed = int(round(1000 * elapsed))
     app.logger.debug('{} begin request {} {} cast {} s'.format(
-        g.request_start_time, request.method, request.url, elapsed
+        g.request_start_time,request.method,request.url,elapsed
     ))
 
     return response
-
 
 @app.errorhandler(Exception)
 def app_error_handler(e):
@@ -73,7 +68,6 @@ def get_login_user_id():
     # 获取用户id
     return UserSecurity.get_user_id(token)
 
-
 URL_PREFIX = BaseConfig.APPLICATION_ROOT_RESTFUL
 manager = APIManager(app, flask_sqlalchemy_db=db)
 manager.create_api(Task, url_prefix=URL_PREFIX, methods=['GET'])
@@ -83,10 +77,4 @@ app.register_blueprint(support_bp)
 app.register_blueprint(image_bp, url_prefix=URL_PREFIX)
 app.register_blueprint(task_bp, url_prefix=URL_PREFIX)
 
-URL_PREFIX = BaseConfig.APPLICATION_ROOT_ADMIN
-app.register_blueprint(article_admin_bp, url_prefix=URL_PREFIX)
 
-
-@app.route('/')
-def index():
-    return template_rendered('article/edit.html')
