@@ -7,7 +7,7 @@ __copyright__ = "Copyright of hopapapa (2017)."
 from flask import Blueprint
 from flask import render_template
 
-article_admin_bp = Blueprint('article', __name__,template_folder='/template')
+article_admin_bp = Blueprint('article', __name__)
 
 
 @article_admin_bp.route('/article', methods=['GET'])
