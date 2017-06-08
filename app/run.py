@@ -7,11 +7,11 @@ __copyright__ = "Copyright of hopapapa (2017)."
 import time
 
 from flask import g
+from flask import render_template
 from flask import request
-from flask import template_rendered
 from flask_restless import APIManager
 
-from admin.views.article import article_admin_bp
+from app.admin.views.article import article_admin_bp
 from app.api.image.views import image_bp
 from app.api.support.views import support_bp
 from app.api.task.models import Task
@@ -56,7 +56,7 @@ def after_request(response):
 @app.errorhandler(Exception)
 def app_error_handler(e):
     app.logger.error(e)
-    return BaseResponse.return_internal_server_error()
+    return BaseResponse.return_internal_server_error(str(e))
 
 
 def get_login_user_id():
@@ -89,4 +89,4 @@ app.register_blueprint(article_admin_bp, url_prefix=URL_PREFIX)
 
 @app.route('/')
 def index():
-    return template_rendered('article/edit.html')
+    return render_template('index.html')
