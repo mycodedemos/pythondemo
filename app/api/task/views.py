@@ -4,17 +4,13 @@
 __author__ = "wenxiaoning(371032668@qq.com)"
 __copyright__ = "Copyright of hopapapa (2017)."
 
-from app.config import app
-from app.config import BaseConfig
 from app.common.base import BaseResponse
 from app.common.base import BaseRequest
 from app.common.decorator import args_required
-from app.api.task.models import Task
-from app.api.task.models import TaskDaily
-from app.api.action.models import Action
+from app.models import Task
+from app.models import TaskDaily
 
 from flask import Blueprint
-from flask import g
 
 task_bp = Blueprint('task', __name__)
 

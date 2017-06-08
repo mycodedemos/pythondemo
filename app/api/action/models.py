@@ -10,14 +10,14 @@ from app.config import db
 from app.config import BaseConfig
 from app.common.base import BaseModel
 
-
-class Action(BaseModel, db.Model):
-    id = db.Column(db.BIGINT, primary_key=True)
-    user_id = db.Column(db.VARCHAR, default="")
-    ip = db.Column(db.VARCHAR, default="")
-    action_type = db.Column(db.INT, default=BaseConfig.TYPE_ACTION_VIEW)
-    item_id = db.Column(db.VARCHAR)
-    item_type = db.Column(db.INT)
-    is_del = db.Column(db.INT, default=0)
-    create_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
-
+#
+# class Action(BaseModel, db.Model):
+#     id = db.Column(db.BIGINT, primary_key=True)
+#     user_id = db.Column(db.VARCHAR, default="")
+#     ip = db.Column(db.VARCHAR, default="")
+#     action_type = db.Column(db.INT, default=BaseConfig.TYPE_ACTION_VIEW)
+#     item_id = db.Column(db.VARCHAR)
+#     item_type = db.Column(db.INT)
+#     is_del = db.Column(db.INT, default=0)
+#     create_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
+#

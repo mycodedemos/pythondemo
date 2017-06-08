@@ -16,8 +16,7 @@ from app.common.base import BaseRequest
 from app.api.support.views import support_bp
 from app.api.image.views import image_bp
 from app.api.task.views import task_bp
-from app.api.task.models import Task
-from app.api.task.models import TaskDaily
+from app.models import Task
 
 
 @app.before_request

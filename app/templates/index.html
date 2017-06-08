@@ -5,6 +5,11 @@
     <title>Title</title>
 </head>
 <body>
-sss
+{{ task }}
+{{ task.id }}
+
+{% for task in tasks %}
+    {{ task.id }}
+{% endfor %}
 </body>
 </html>

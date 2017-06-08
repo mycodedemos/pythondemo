@@ -4,12 +4,7 @@
 __author__ = "wenxiaoning(wenxiaoning@gochinatv.com)"
 __copyright__ = "Copyright of GoChinaTV (2017)."
 
-from app.common.base import BaseModel
-from app.common.base import BaseDict
-from app.common.security import Md5
-from app.api.image.models import Image
-from app.api.task.models import Task
-from app.api.task.models import TaskDaily
+from app.models import TaskDaily
 
 import requests
 

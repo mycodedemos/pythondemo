@@ -14,7 +14,7 @@ from flask_restless import APIManager
 from app.admin.views.article import article_admin_bp
 from app.api.image.views import image_bp
 from app.api.support.views import support_bp
-from app.api.task.models import Task
+from app.models import Task
 from app.api.task.views import task_bp
 from app.common.base import BaseRequest
 from app.common.base import BaseResponse

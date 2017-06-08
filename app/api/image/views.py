@@ -12,8 +12,8 @@ from app.config import BaseConfig
 from app.common.base import BaseResponse
 from app.common.base import BaseRequest
 from app.common.decorator import jsonp
-from app.api.image.models import Image
-from app.api.action.models import Action
+from app.models import Image
+from app.models import Action
 
 from flask import request
 from flask import Blueprint

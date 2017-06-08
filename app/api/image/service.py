@@ -7,7 +7,7 @@ __copyright__ = "Copyright of hopapapa (2017)."
 
 import requests
 
-from app.api.image.models import Image
+from app.models import Image
 from app.common.third.juhe import Juhe
 from app.common.security import Md5
 from app.common.base import BaseDB

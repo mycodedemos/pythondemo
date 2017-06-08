@@ -10,9 +10,6 @@ from datetime import date
 import time
 import calendar
 
-from app.api.task.models import TaskDaily
-from app.api.task.models import Task
-from app.common.base import BaseRequest
 
 
 class TaskService():

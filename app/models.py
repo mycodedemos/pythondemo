@@ -14,6 +14,7 @@ from enum import Enum
 
 
 class Action(BaseModel, db.Model):
+    __tablename__ = 'action'
     id = db.Column(db.BIGINT, primary_key=True)
     user_id = db.Column(db.VARCHAR, default="")
     ip = db.Column(db.VARCHAR, default="")
@@ -25,6 +26,7 @@ class Action(BaseModel, db.Model):
 
 
 class Image(BaseModel, db.Model):
+    __tablename__ = 'image'
     id = db.Column(db.VARCHAR, primary_key=True)
     third_id = db.Column(db.VARCHAR, default="")
     source = db.Column(db.VARCHAR, default="juhe")
