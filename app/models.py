@@ -142,3 +142,26 @@ class TaskDaily(BaseModel, db.Model):
         self.task.done_status = Task.DoneStatus.under_way.value
         self.task.update_self()
         return self
+
+
+class Article(BaseModel, db.Model):
+    __tablename__ = 'article'
+    id = db.Column(db.String, primary_key=True)
+    name = db.Column(db.String, default="")
+    category_id = db.Column(db.INT, db.ForeignKey('category.id'))
+    tags = db.Column(db.String, default="")
+    content = db.Column(db.String, default="")
+    is_del = db.Column(db.INT, default=0)
+    create_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
+    update_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
+
+
+class Category(BaseModel, db.Model):
+    __tablename__ = 'category'
+    id = db.Column(db.INT, primary_key=True)
+    name = db.Column(db.String, default="")
+    is_del = db.Column(db.INT, default=0)
+    create_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
+    update_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
+
+    articles = db.relationship("Article", backref="category", lazy='dynamic')

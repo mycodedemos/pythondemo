@@ -1,92 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''配置信息'''
+'''公共需要run的项目'''
 __author__ = "wenxiaoning(371032668@qq.com)"
 __copyright__ = "Copyright of hopapapa (2017)."
 
-import time
-
-from flask import g
-from flask import render_template
-from flask import request
-from flask_restless import APIManager
-
-from app.admin.views.article import article_admin_bp
-from app.api.image.views import image_bp
-from app.api.support.views import support_bp
-from app.models import Task
-from app.api.task.views import task_bp
-from app.common.base import BaseRequest
-from app.common.base import BaseResponse
-from app.common.base import UserSecurity
 from app.config import BaseConfig
 from app.config import app
 from app.config import db
+from app.models import Action
+from app.models import Article
+from app.models import Category
+from app.models import Image
+from app.models import Task
+from app.models import TaskDaily
+from flask_restless import APIManager
 
-
-@app.before_request
-def before_request():
-    g.request_start_time = time.time()
-    app.logger.debug(
-        '{} {}\nargs:{}\nheaders:{}'.format(
-            request.method, request.url, BaseRequest.get_args(), request.headers
-        )
-    )
-
-    g.user_id = get_login_user_id()
-    g.user = None
-
-    # ip
-    g.ip = request.remote_addr
-
-
-@app.after_request
-def after_request(response):
-    if not hasattr(g, 'request_start_time'):
-        return response
-    elapsed = time.time() - g.request_start_time
-    # elapsed = int(round(1000 * elapsed))
-    app.logger.debug('{} begin request {} {} cast {} s'.format(
-        g.request_start_time, request.method, request.url, elapsed
-    ))
-
-    return response
-
-
-@app.errorhandler(Exception)
-def app_error_handler(e):
-    app.logger.error(e)
-    return BaseResponse.return_internal_server_error(str(e))
-
-
-def get_login_user_id():
-    '''从request中过去user_id'''
-    headers = request.headers
-
-    callback = request.args.get('callback', False)
-    if callback:
-        headers = request.cookies
-
-    token = headers.get(BaseConfig.HEAD_AUTHORIZATION)
-    if not token:
-        return None
-    # 获取用户id
-    return UserSecurity.get_user_id(token)
-
-
+# restful
 URL_PREFIX = BaseConfig.APPLICATION_ROOT_RESTFUL
 manager = APIManager(app, flask_sqlalchemy_db=db)
+manager.create_api(Action, url_prefix=URL_PREFIX, methods=['GET'])
+manager.create_api(Article, url_prefix=URL_PREFIX, methods=['GET'])
+manager.create_api(Category, url_prefix=URL_PREFIX, methods=['GET'])
+manager.create_api(Image, url_prefix=URL_PREFIX, methods=['GET'])
+manager.create_api(Image, url_prefix=URL_PREFIX, methods=['GET'])
 manager.create_api(Task, url_prefix=URL_PREFIX, methods=['GET'])
-
-URL_PREFIX = BaseConfig.APPLICATION_ROOT
-app.register_blueprint(support_bp)
-app.register_blueprint(image_bp, url_prefix=URL_PREFIX)
-app.register_blueprint(task_bp, url_prefix=URL_PREFIX)
-
-URL_PREFIX = BaseConfig.APPLICATION_ROOT_ADMIN
-app.register_blueprint(article_admin_bp, url_prefix=URL_PREFIX)
-
-
-@app.route('/')
-def index():
-    return render_template('index.html')
+manager.create_api(TaskDaily, url_prefix=URL_PREFIX, methods=['GET'])

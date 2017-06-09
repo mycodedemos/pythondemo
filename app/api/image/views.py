@@ -4,8 +4,6 @@
 __author__ = "wenxiaoning(371032668@qq.com)"
 __copyright__ = "Copyright of hopapapa (2017)."
 
-import sys
-import os
 
 from app.config import app
 from app.config import BaseConfig

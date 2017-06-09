@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<!-- 引入样式 -->
+<link rel="stylesheet"
+      href="https://unpkg.com/element-ui/lib/theme-default/index.css">
+
+<body>
+
+<div id="app">
+
+    <el-form id="el-form" ref="form" :model="form" label-width="80px">
+        <el-form-item label="id">
+            <el-input v-model="form.id" style="width: 200px"
+                      :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="名称">
+            <el-input v-model="form.name" style="width: 100px"></el-input>
+        </el-form-item>
+        <el-form-item label="内容">
+            <div id="editor">
+                <p>欢迎使用 <b>wangEditor</b> 富文本编辑器</p>
+            </div>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @click="onSubmit">提交</el-button>
+            <el-button @click="onBack">返回</el-button>
+        </el-form-item>
+    </el-form>
+</div>
+
+</body>
+<!-- 引入组件库 -->
+<!-- 引入组件库 -->
+<script src="/static/js/jquery.js"></script>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/vue.js"></script>
+<script src="/static/js/element/index.js"></script>
+<script src="/static/js/utils.js"></script>
+<script type="text/javascript" src="/static/js/wangEditor.min.js"></script>
+<script>
+    var item_id = getValue('id');
+    var E = window.wangEditor;
+    var editor = new E('#editor')
+    editor.create()
+    editor.txt.html('<p>ssss')
+    $(function () {
+        $.ajax({
+            url: "/restful/article/{{ article.id }}",
+            dataType: "jsonp",
+            type: "get",
+            success: function (data) {
+                initData(data)
+            }
+        })
+    });
+
+
+    function initData(data) {
+        data = data['data']
+        console.log(data)
+        editor.txt.html(data['content'])
+        var Main = {
+            data() {
+                return {
+                    form: data
+                }
+            },
+            methods: {
+                onSubmit(e) {
+                    console.log(editor.txt.text())
+                    console.log(editor.txt.html())
+                    var formData = this.form
+                    formData['content'] = editor.txt.html()
+                    $.ajax({
+                        url: "/article/edit.json",
+                        type: "post",
+                        data: JSON.stringify(formData),
+                        contentType: "application/json",
+                        dateType: "json",
+                        success: function (data) {
+                            console.log(data)
+                        }
+                    })
+                },
+                onBack(e){
+                    utils.goToPageWithOutCache('list.html');
+                }
+            }
+        }
+        var Ctor = Vue.extend(Main)
+        new Ctor().$mount('#app')
+    }
+
+</script>
+</html>
