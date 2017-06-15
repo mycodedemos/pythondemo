@@ -27,7 +27,13 @@ from urllib.parse import urlparse
 URL_CONFIG = urlparse(app.config['SQLALCHEMY_DATABASE_URI'])
 
 
-class BaseModel(object):
+class BaseObject(object):
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+
+class BaseModel(BaseObject):
     """
     SQLAlchemy JSON serialization
     """
