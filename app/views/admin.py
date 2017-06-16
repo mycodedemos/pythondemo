@@ -40,6 +40,7 @@ def article_list_html():
 def article_edit_json():
     '''修改接口'''
     args = BaseRequest.get_args()
+    print(args)
 
     if 'id' in args:
         Article.update_by_id(**args)

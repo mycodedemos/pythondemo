@@ -74,11 +74,16 @@ class Task(BaseModel, db.Model):
         return [(self.begin_day + timedelta(i)).isoformat() for i in
                 range(0, self.total_day)]
 
-    def __init__(self, total_work, daily_work, begin_day=date.today(),
-                 begin_work=1, **params):
+    def __init__(self, total_work, daily_work=10, begin_work=1, **params):
+        print(params)
+        print(daily_work, begin_work)
         self.id = params.get('id', self.generate_id())
         self.total_work = int(total_work)
         self.daily_work = int(daily_work)
+        begin_day = params.get('begin_day')
+        if not begin_day:
+            begin_day = date.today()
+        print(begin_day)
         self.begin_day = begin_day if isinstance(begin_day, date) else date(
             int(begin_day.split('-')[0]), int(begin_day.split('-')[1]),
             int(begin_day.split('-')[2]))

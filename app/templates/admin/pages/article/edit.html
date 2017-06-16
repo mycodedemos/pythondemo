@@ -20,6 +20,12 @@
         <el-form-item label="名称">
             <el-input v-model="form.name" style="width: 100px"></el-input>
         </el-form-item>
+        <el-form-item label="类型">
+            <el-input v-model="form.category_id" style="width: 100px"></el-input>
+        </el-form-item>
+        <el-form-item label="标签">
+            <el-input v-model="form.tags" style="width: 100px"></el-input>
+        </el-form-item>
         <el-form-item label="内容">
             <div id="editor">
                 <p>欢迎使用 <b>wangEditor</b> 富文本编辑器</p>
@@ -46,7 +52,6 @@
     var E = window.wangEditor;
     var editor = new E('#editor')
     editor.create()
-    editor.txt.html('<p>ssss')
     $(function () {
         $.ajax({
             url: "/restful/article/{{ article.id }}",
@@ -66,7 +71,12 @@
         var Main = {
             data() {
                 return {
-                    form: data
+                    form: {
+                        id:data['id'],
+                        name:data['name'],
+                        category_id:data['category_id'],
+                        content:data['content']
+                    }
                 }
             },
             methods: {
@@ -74,6 +84,7 @@
                     console.log(editor.txt.text())
                     console.log(editor.txt.html())
                     var formData = this.form
+                    console.log(formData)
                     formData['content'] = editor.txt.html()
                     $.ajax({
                         url: "/article/edit.json",

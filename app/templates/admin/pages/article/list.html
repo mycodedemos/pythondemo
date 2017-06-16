@@ -36,7 +36,7 @@
                              show-overflow-tooltip>
                 <template scope="scope">
                     <el-button type="primary" @click="headleManage(scope.row)">
-                        管理
+                        修改
                     </el-button>
                     <el-button type="danger" icon="delete"
                                @click="headleDel(scope.row)"></el-button>
@@ -140,7 +140,7 @@
                     utils.goToPageWithOutCache('list.html?page=' + currentPage);
                 },
                 headleManage(row){
-                    utils.goToPageWithOutCache('list_daily.html?id=' + row.id);
+                    utils.goToPageWithOutCache('/article/edit.html?id=' + row.id);
                 }
             }
         }

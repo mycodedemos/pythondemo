@@ -101,7 +101,7 @@
 
     $(function () {
         $.ajax({
-            url: "/restful/v1/task/" + utils.getValue('id') + "?page=" + config.getPage(),
+            url: "/restful/task/" + utils.getValue('id') + "?page=" + config.getPage(),
             dataType: "jsonp",
             type: "get",
             success: function (data) {

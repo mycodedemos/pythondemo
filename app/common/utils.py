@@ -6,6 +6,7 @@ __copyright__ = "Copyright of GoChinaTV (2017)."
 
 import re
 import random
+import time
 
 RE_CHINESE = re.compile(u"[\u4e00-\u9fa5]+")  # 正则查找中文
 RE_ENGLISH = re.compile(u"[A-Za-z]+")  # 正则查找英文
@@ -189,6 +190,17 @@ def check_identity_card(card):
         return "X"
     else:
         return r
+
+
+def timer(func, *args, reps=1000, **kwargs):
+    """计算方法耗时"""
+    start = time.time()
+    reps_list = range(reps)
+    for i in reps_list:
+        func(*args, **kwargs)
+
+    elapsed = time.time() - start
+    return elapsed
 
 
 if __name__ == '__main__':
