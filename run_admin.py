@@ -47,10 +47,7 @@ def after_request(response):
     return response
 
 
-@app.errorhandler(Exception)
-def app_error_handler(e):
-    app.logger.error(e)
-    return BaseResponse.return_internal_server_error(str(e))
+
 
 
 def get_login_user_id():

@@ -20,25 +20,29 @@
         <el-form-item label="名称">
             <el-input v-model="form.name" style="width: 200px"></el-input>
         </el-form-item>
-        <el-form-item label="总任务">
-            <el-input v-model="form.total_work" style="width: 100px"></el-input>
-        </el-form-item>
+        <template v-if="isTotal">
+            <el-form-item label="总任务">
+                <el-input v-model="form.total_work"
+                          style="width: 100px"></el-input>
+            </el-form-item>
+            <el-form-item label="开始任务">
+                <el-input v-model="form.begin_work"
+                          style="width: 100px"></el-input>
+            </el-form-item>
+        </template>
+        <template v-else>
+            <el-form-item label="总天数">
+                <el-input v-model="form.total_day"
+                          style="width: 100px"></el-input>
+            </el-form-item>
+        </template>
         <el-form-item label="每天任务">
             <el-input v-model="form.daily_work" style="width: 100px"></el-input>
         </el-form-item>
         <el-form-item label="开始日期">
             <el-input v-model="form.begin_day" style="width: 100px"></el-input>
-            <!--<el-date-picker-->
-                    <!--v-model="form.begin_day"-->
-                    <!--align="right"-->
-                    <!--type="date"-->
-                    <!--placeholder="选择日期"-->
-                    <!--:picker-options="pickerOptions1">-->
-            <!--</el-date-picker>-->
         </el-form-item>
-        <el-form-item label="开始任务">
-            <el-input v-model="form.begin_work" style="width: 100px"></el-input>
-        </el-form-item>
+
         <el-form-item>
             <el-button type="primary" @click="onSubmit">提交</el-button>
             <el-button @click="onBack">返回</el-button>
@@ -56,14 +60,15 @@
 <script src="/static/js/element/index.js"></script>
 <script src="/static/js/utils.js"></script>
 <script>
-    var item_id = getValue('id');
+    var item_id = utils.getValue('id');
+    var type = utils.getValue('type');
     $(function () {
 
         if (item_id == undefined) {
             initData(undefined)
         } else {
             $.ajax({
-                url: "/admin/v1/article/" + item_id,
+                url: "/admin/v1/task/" + item_id,
                 dataType: "jsonp",
                 type: "get",
                 success: function (data) {
@@ -85,6 +90,13 @@
         } else {
             item = data['data']
         }
+        console.log(type)
+        if (type == 1) {
+            item['isTotal'] = true
+        } else {
+            item['isDaily'] = true
+        }
+
 
         var Main = {
             data() {
@@ -118,6 +130,7 @@
                 onSubmit(e) {
                     var $this = this;
                     var formData = this.form
+                    formData['type'] = type;
                     $.ajax({
                         url: "/api/v1/task",
                         type: "post",
@@ -125,7 +138,7 @@
                         contentType: "application/json",
                         dateType: "json",
                         success: function (data) {
-                            utils.goToPageWithOutCache('list.html');
+                            utils.goToPageWithOutCache('list.html?type='+type);
                         }
                         ,
                         error: function (res, error, errorMsg) {
@@ -134,7 +147,7 @@
                     })
                 },
                 onBack(e){
-                    utils.goToPageWithOutCache('list.html');
+                    utils.goToPageWithOutCache('list.html?type='+type);
                 }
             }
         }

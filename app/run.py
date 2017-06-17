@@ -4,6 +4,7 @@
 __author__ = "wenxiaoning(371032668@qq.com)"
 __copyright__ = "Copyright of hopapapa (2017)."
 
+from app.common.base import BaseResponse
 from app.config import BaseConfig
 from app.config import app
 from app.config import db
@@ -13,6 +14,7 @@ from app.models import Category
 from app.models import Image
 from app.models import Task
 from app.models import TaskDaily
+
 from flask_restless import APIManager
 
 # restful
@@ -25,3 +27,9 @@ manager.create_api(Image, url_prefix=URL_PREFIX, methods=['GET'])
 manager.create_api(Image, url_prefix=URL_PREFIX, methods=['GET'])
 manager.create_api(Task, url_prefix=URL_PREFIX, methods=['GET'])
 manager.create_api(TaskDaily, url_prefix=URL_PREFIX, methods=['GET'])
+
+
+@app.errorhandler(Exception)
+def app_error_handler(e):
+    app.logger.error(e)
+    return BaseResponse.return_internal_server_error(str(e))

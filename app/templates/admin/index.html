@@ -13,7 +13,12 @@
 <div id="app">
     <el-menu :default-active="activeNav" class="el-menu-demo"
              mode="horizontal" @select="handleSelect">
-        <el-menu-item index="/static/pages/task/list.html">任务管理</el-menu-item>
+        <el-submenu index="1">
+            <template slot="title">任务管理</template>
+            <el-menu-item index="/static/pages/task/list.html?type=1">总任务管理</el-menu-item>
+            <el-menu-item index="/static/pages/task/list.html?type=2">每天任务管理</el-menu-item>
+        </el-submenu>
+
         <el-menu-item index="/article/list.html">文章管理</el-menu-item>
         <el-submenu index="3">
             <template slot="title">资源管理</template>

@@ -56,7 +56,8 @@ class Task(BaseModel, db.Model):
     total_day = db.Column(db.INT, default=0)
     begin_day = db.Column(db.DATE)
     end_day = db.Column(db.DATE)
-    done_status = db.Column(db.INT, default=0)
+    type = db.Column(db.INT, default=1, doc='类型：1、总完成量，2、按每天完成')
+    done_status = db.Column(db.INT, default=0, doc='完成状态、0：外开始、1：已完成、2：进行中')
     status_message = db.Column(db.VARCHAR, default="")
     remark = db.Column(db.VARCHAR, default="")
     is_del = db.Column(db.INT, default=0)
@@ -69,41 +70,73 @@ class Task(BaseModel, db.Model):
     daily_tasks = db.relationship('TaskDaily', backref='task', lazy='dynamic')
 
     @property
-    def work_days(self):
-        print(self.total_day)
-        return [(self.begin_day + timedelta(i)).isoformat() for i in
-                range(0, self.total_day)]
+    def is_total(self):
+        print(self.type)
+        return self.type == 1
 
-    def __init__(self, total_work, daily_work=10, begin_work=1, **params):
-        print(params)
-        print(daily_work, begin_work)
+    @property
+    def is_daily(self):
+        return self.type == 2
+
+    @property
+    def work_days(self):
+        days = self.total_day
+        return [(self.begin_day + timedelta(i)).isoformat() for i in
+                range(0, days)]
+
+    def __init__(self, total_work=0, daily_work=10, begin_work=1, type=1,
+                 **params):
+        """
+        任务分为总量和按天分类
+
+        :param type: 1/总量   2/按天
+            if type == 1 ：
+                total_work、daily_work、begin_work为必传
+            elif type == 2：
+                daily_work、total_day必传
+        :param total_work:
+        :param daily_work:
+        :param begin_work:
+        :param params:
+        """
         self.id = params.get('id', self.generate_id())
-        self.total_work = int(total_work)
         self.daily_work = int(daily_work)
         begin_day = params.get('begin_day')
-        if not begin_day:
-            begin_day = date.today()
-        print(begin_day)
-        self.begin_day = begin_day if isinstance(begin_day, date) else date(
-            int(begin_day.split('-')[0]), int(begin_day.split('-')[1]),
-            int(begin_day.split('-')[2]))
-        self.begin_work = int(begin_work)
-        self.todo_work = self.total_work - self.begin_work + 1
-        self.last_day_work = self.todo_work % self.daily_work
+        self.begin_day = self.make_begin_day(begin_day)
+        self.name = params.get('name')
+        self.type = int(type)
 
-        self.total_day = self.todo_work // self.daily_work + \
-                         (1 if self.last_day_work > 0 else 0)
+        print(self.is_total,self.is_daily)
+
+        if self.is_total:
+            self.total_work = int(total_work)
+            self.begin_work = int(begin_work)
+            self.todo_work = self.total_work - self.begin_work + 1
+            self.last_day_work = self.todo_work % self.daily_work
+            self.total_day = self.todo_work // self.daily_work + \
+                             (1 if self.last_day_work > 0 else 0)
+
+        if self.is_daily:
+            self.total_day = int(params.get('total_day'))
+            print(self.total_day)
+            self.total_work = self.total_day * self.daily_work
+            self.todo_work = self.todo_work
+        print(self)
 
         self.end_day = self.begin_day + timedelta(self.total_day - 1)
-        self.name = params.get('name')
-
         self.status_message = '{}, 共{}工作量, 每天完成{}, {}天完成, {}开始, {}结束'.format(
             self.name, self.todo_work, self.daily_work, self.total_day,
             self.begin_day, self.end_day
         )
-
         self.remark = params.get('remark')
         self.user_id = params.get('user_id')
+
+    def make_begin_day(self, d):
+        if not d:
+            return date.today()
+        return d if isinstance(d, date) else date(int(d.split('-')[0]),
+                                                  int(d.split('-')[1]),
+                                                  int(d.split('-')[2]))
 
 
 class TaskDaily(BaseModel, db.Model):
@@ -132,11 +165,11 @@ class TaskDaily(BaseModel, db.Model):
             done_status = self.DoneStatus.done.value
         elif done_work > self.todo_work:
             diff_day = (done_work - self.todo_work) / self.task.daily_work
-            remark = '超额完成任务\n预计提前 {} 天完成任务'.format(diff_day)
+            remark = '超额完成任务\n预计提前 {} 天完成任务'.format(diff_day) if self.task.is_total else ''
             done_status = self.DoneStatus.over_done.value
         elif done_work < self.todo_work:
             diff_day = (self.todo_work - done_work) / self.task.daily_work
-            remark = '没有完成任务\n预计延后 {} 天完成任务'.format(diff_day)
+            remark = '没有完成任务\n预计延后 {} 天完成任务'.format(diff_day) if self.task.is_total else ''
             done_status = self.DoneStatus.diff_done.value
 
         self.remark = remark

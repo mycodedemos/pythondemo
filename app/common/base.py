@@ -32,6 +32,15 @@ class BaseObject(object):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
+    def to_dict(self):
+        return eval(self.to_json())
+
+    def to_json(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True)
+
+    def __str__(self):
+        return self.to_json()
+
 
 class BaseModel(BaseObject):
     """
@@ -209,22 +218,17 @@ class BaseDB():
             conn.close()
 
 
-class BaseResponse(BaseModel):
+class BaseResponse(BaseObject):
     data = {}
     status = 200
-    message = ""
+    message = None
     version = 0
 
     def __init__(self, data={}, status=200, message=""):
         self.data = data
         self.status = status
-        self.message = message,
+        self.message = message
         self.version = int(time.time())
-
-    def to_dict(self, rel=None, backref=None):
-        item = self.__dict__
-        item['message'] = item['message'][0]
-        return item
 
     @classmethod
     def return_response(cls, data={}, status=200, message="", headers={}):
@@ -286,11 +290,6 @@ class BaseResponse(BaseModel):
 
 class BaseRequest():
     @classmethod
-    def get_param_int(cls, params, key, default=0):
-        res = params.get(key, default)
-        return int(res)
-
-    @classmethod
     def get_arg_int(cls, params, key, default=0):
         res = params.get(key, default)
         return int(res)
@@ -310,11 +309,46 @@ class BaseRequest():
 class BaseDict(dict):
     def filter(self, *args, **kwargs):
         """
+        过滤dict
+        :param args: 默认 source_include
         :param kwargs:
-            source_include
+            source_include：想要留下的keys
+                eq:[attr,attr1]
+                子元素可以使用 ["obj.attr"] 和 ["obj[attr1,attr2]"] 两种方式
+                速度上推荐使用 ["obj[attr1,attr2]"]
+            source_exclude：想要去掉的keys
         :return:
         """
-        return utils.filter_dict(self, *args, **kwargs)
+        source_include = args if args else kwargs.get('source_include')
+        source_exclude = kwargs.get('source_exclude')
+
+        temp = {}
+        if source_include:
+            for item in source_include:
+                if '.' in item:
+                    key = item.split('.')[0]
+                    sub_key = item.split('.')[1]
+                    if self[key] and isinstance(self[key], dict):
+                        if key not in temp:
+                            temp[key] = {}
+                        temp[key][sub_key] = self[key][sub_key]
+                elif '[' in item and ']' in item:
+                    key = item.split('[')[0]
+                    v = self[key]
+                    sub_keys = item.split('[')[1].rstrip(']').split(',')
+                    if isinstance(v, dict):
+                        temp[key] = BaseDict(v).filter(*sub_keys)
+                    elif isinstance(v, list):
+                        temp[key] = [BaseDict(sv).filter(*sub_keys) for sv in v]
+                else:
+                    temp[item] = self.get(item)
+            return temp
+        elif source_exclude:
+            for item in source_exclude:
+                self.pop(item)
+            return self
+
+        return self
 
 
 class UserSecurity():

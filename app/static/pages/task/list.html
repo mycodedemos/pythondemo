@@ -67,14 +67,14 @@
 <script>
     var Main;
     var Ctor;
-    var $btnDiv = $('#app')
+    var $btnDiv = $('#app');
+    var type = utils.getValue('type');
 
     $(function () {
         $.ajax({
-            url: "/api/v1/task?page=" + config.getPage(),
+            url: "/api/v1/task?page=" + config.getPage() + "&type=" + type,
             dataType: "json",
             success: function (data) {
-                console.log(data)
                 initData(data)
             }
         })
@@ -130,7 +130,7 @@
                     }
                 },
                 headleAdd(){
-                    utils.goToPageWithOutCache('edit.html');
+                    utils.goToPageWithOutCache('edit.html?type='+type);
                 },
                 headleDel(row){
                     var id = row.id
@@ -142,10 +142,10 @@
 //                            utils.goToPageWithOutCache('list.html');
 //                        }
 //                    })
-                    deleteItem(this,id,null,"/api/v1/task/"+ id)
+                    deleteItem(this, id, null, "/api/v1/task/" + id)
                 },
                 headlePaginateChange(currentPage){
-                    utils.goToPageWithOutCache('list.html?page=' + currentPage);
+                    utils.goToPageWithOutCache('list.html?page=' + currentPage + "&type="+type );
                 },
                 headleManage(row){
                     utils.goToPageWithOutCache('list_daily.html?id=' + row.id);

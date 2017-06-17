@@ -25,8 +25,8 @@ image_bp = Blueprint('image', __name__)
 def image_list():
     '''图片列表'''
     args = request.args
-    page = BaseRequest.get_param_int(args, 'page', BaseConfig.DEFAULT_PAGE)
-    per_page = BaseRequest.get_param_int(args, 'per_page',
+    page = BaseRequest.get_arg_int(args, 'page', BaseConfig.DEFAULT_PAGE)
+    per_page = BaseRequest.get_arg_int(args, 'per_page',
                                          BaseConfig.DEFAULT_PER_PAGE)
     paginate = Image.query_paginate(
         page=page,
