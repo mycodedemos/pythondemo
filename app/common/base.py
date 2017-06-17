@@ -292,6 +292,8 @@ class BaseRequest():
     @classmethod
     def get_arg_int(cls, params, key, default=0):
         res = params.get(key, default)
+        if not res:
+            return default
         return int(res)
 
     @classmethod
