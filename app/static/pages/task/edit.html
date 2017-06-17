@@ -91,7 +91,9 @@
             item = data['data']
         }
         console.log(type)
+        var isTotal = false
         if (type == 1) {
+            isTotal = true
             item['isTotal'] = true
         } else {
             item['isDaily'] = true
@@ -102,6 +104,7 @@
             data() {
                 return {
                     form: item,
+                    isTotal:isTotal,
                     pickerOptions1: {
                         shortcuts: [{
                             text: '今天',
