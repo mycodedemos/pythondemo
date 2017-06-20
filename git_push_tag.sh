@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-PUSH_MSG=$1
+TAG_NAME=$1
+PUSH_MSG=$2
 
 
 main(){
@@ -8,11 +9,13 @@ main(){
     git add .
     git commit -m ${PUSH_MSG}
     git push origin master
+    git tag ${TAG_NAME}
+    git push origin ${TAG_NAME}
 }
 
-if [ ! ${PUSH_MSG} ]
+if [ ! ${TAG_NAME} ]
 then
-    echo 'UAGE: ./git_push.sh <regex:PUSH_MSG>'
+    echo 'UAGE: ./git_push.sh <regex:tag_name>'
 else
     main
 fi
