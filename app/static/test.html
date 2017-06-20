@@ -1,62 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="utf-8"/>
+  <title>Marked in the browser</title>
+  <script src="js/marked.js"></script>
 </head>
-<!-- 引入样式 -->
-<link rel="stylesheet"
-      href="css/element/index.css">
-
 <body>
-
+  <div id="content"></div>
+  <script>
+    document.getElementById('content').innerHTML =
+      marked('# Marked in browser\n\nRendered by **marked**.```java```');
+    console.log(marked('# Marked in browser\n\nRendered by **marked**.```java```'))
+  </script>
 </body>
-<!-- 引入组件库 -->
-<script src="/static/js/jquery.js"></script>
-<script src="/static/js/jquery.min.js"></script>
-<script src="/static/js/vue.js"></script>
-<script src="/static/js/element/index.js"></script>
-<script src="/static/js/utils.js"></script>
-<script>
-    $(function () {
-        $.ajax({
-            url:"http://localhost:8001/test",
-            type:"PUT",
-            contentType:"application/json",
-            dateType:"json",
-            data:JSON.stringify({
-                name:"ss"
-            }),
-            success:function (data) {
-                console.log(data)
-            }
-        })
-    });
-    function initData() {
-
-        Main = {
-            data() {
-                return {
-                    activeNav: 'pages/home_page/list.html?type=81',
-                    currentRow: null
-                }
-            },
-
-            methods: {
-                handleCurrentChange(val) {
-                    $btnDiv.val(val.id)
-                    this.currentRow = val;
-                },
-                handleSelect(key, keyPath) {
-                    this.activeNav = key;
-                    $("#view_iframe").attr('src', utils.makeNoCacheUrl(key))
-                }
-            }
-        }
-        Ctor = Vue.extend(Main)
-        new Ctor().$mount('#app')
-    }
-
-
-</script>
 </html>

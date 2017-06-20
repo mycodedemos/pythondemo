@@ -10,6 +10,7 @@ from urllib.request import urlopen
 
 from Crypto.Cipher import AES
 from binascii import b2a_hex, a2b_hex
+import base64
 
 
 class AESecurity():
@@ -73,6 +74,16 @@ class Md5():
             for chunk in iter(lambda: f.read(4096), b""):
                 hash_md5.update(chunk)
         return hash_md5.hexdigest()
+
+
+class Base64():
+    @classmethod
+    def encode(cls, content):
+        return base64.b64encode(content.encode()).decode()
+
+    @classmethod
+    def decode(cls, content):
+        return base64.b64decode(content).decode()
 
 
 if __name__ == '__main__':

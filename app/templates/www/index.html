@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的电影院</title>
+</head>
+<!-- 引入样式 -->
+<link rel="stylesheet" href="/static/css/element/index.css">
+
+<body>
+
+
+<div id="app">
+    <el-menu :default-active="activeNav" class="el-menu-demo"
+             mode="horizontal" @select="handleSelect">
+        {% for tag in tags %}
+            <el-menu-item index="{{ tag }}">电视剧</el-menu-item>
+        {% endfor %}
+    </el-menu>
+    <iframe id="view_iframe" src="{{ default_tag }}"
+            style="width:100%;height: 1000px" frameborder="no"
+            border="0"></iframe>
+
+</div>
+
+
+</body>
+<!-- 引入组件库 -->
+<script src="/static/js/jquery.js"></script>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/vue.js"></script>
+<script src="/static/js/element/index.js"></script>
+<script src="/static/js/utils.js"></script>
+<script>
+    var Main;
+    var Ctor;
+    var $btnDiv = $('#app')
+
+    $(function () {
+        initData()
+    });
+    function initData() {
+
+        Main = {
+            data() {
+                return {
+                    activeNav: '{{ default_tag }}',
+                    currentRow: null
+                }
+            },
+
+            methods: {
+                handleCurrentChange(val) {
+                    $btnDiv.val(val.id)
+                    this.currentRow = val;
+                },
+                handleSelect(key, keyPath) {
+                    this.activeNav = key;
+                    $("#view_iframe").attr('src', utils.makeNoCacheUrl(key))
+                }
+            }
+        }
+        Ctor = Vue.extend(Main)
+        new Ctor().$mount('#app')
+    }
+
+
+</script>
+</html>

@@ -49,7 +49,6 @@ def after_request(response):
 
 
 
-
 def get_login_user_id():
     '''从request中过去user_id'''
     headers = request.headers

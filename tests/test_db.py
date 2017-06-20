@@ -5,16 +5,12 @@ __author__ = "wenxiaoning(wenxiaoning@gochinatv.com)"
 __copyright__ = "Copyright of GoChinaTV (2017)."
 
 from app.models import TaskDaily
+from app.models import Video
+from app.models import VideoSource
 
 import requests
 
 if __name__ == '__main__':
-    #
-    # Task.create(
-    #     id=Task.generate_id(),
-    #     end_day='2017-05-05'
-    # )
-
-    item = TaskDaily.query_item(id=1)
-    print(item.to_dict(rel=True).filter('id','create_ts'))
+    Video.create(id=Video.generate_id(), name='越狱 第二季')
+    Video.create(id=Video.generate_id(), name='楚乔传')
     pass

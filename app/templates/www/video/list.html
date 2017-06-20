@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+        }
+
+        .center {
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        #video-list {
+            list-style-type: none;
+            width: 1200px;
+            float: left;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        #video-list li {
+            float: left;
+            width: 200px;
+        }
+
+        #video-list span {
+            text-align: left;
+        }
+
+        #video-list a {
+
+        }
+    </style>
+</head>
+<body>
+<div class="center">
+
+    <ul id="video-list">
+        {% for item in items %}
+            <li>
+                <a href="{{ item.detail_url }}" target="_blank"><img
+                        src="{{ item.poster }}"
+                        width="180">
+                    <br/>
+                    <span>{{ item.name }}</span>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+</body>
+</html>
