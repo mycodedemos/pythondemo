@@ -7,9 +7,11 @@
     <link rel="stylesheet" href="css/editormd.min.css"/>
 </head>
 <body>
-<div id="editormd">
-    <textarea style="display:none;height: 500px">### Hello Editor.md !</textarea>
+<div id="editormd" style="height: 500px">
+    <textarea id="md"
+              style="display:none;height: 500px" rows="60">### Hello Editor.md !</textarea>
 </div>
+<button onclick="getData()">获取</button>
 <div id="content"></div>
 
 </body>
@@ -17,19 +19,23 @@
 <script src="js/editormd.min.js"></script>
 <script src="js/marked.js"></script>
 <script>
-    $(function() {
+    $(function () {
         var editor = editormd("editormd", {
-            path : "js/lib/" // Autoload modules mode, codemirror, marked... dependents libs path
+            path: "lib/" // Autoload modules mode, codemirror, marked... dependents libs path
         });
 
         /*
-        // or
-        var editor = editormd({
-            id   : "editormd",
-            path : "../lib/"
-        });
-        */
+         // or
+         var editor = editormd({
+         id   : "editormd",
+         path : "../lib/"
+         });
+         */
     });
+
+    function getData() {
+        console.log($('#md').text())
+    }
     document.getElementById('content').innerHTML =
         marked('# Marked in browser\n\nRendered by **marked**.```java```');
     console.log(marked('# Marked in browser\n\nRendered by **marked**.```java```'))
