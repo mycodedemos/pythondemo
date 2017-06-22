@@ -7,6 +7,8 @@ __copyright__ = "Copyright of GoChinaTV (2017)."
 import re
 import random
 import time
+import os
+import json
 
 RE_CHINESE = re.compile(u"[\u4e00-\u9fa5]+")  # 正则查找中文
 RE_ENGLISH = re.compile(u"[A-Za-z]+")  # 正则查找英文
@@ -203,18 +205,33 @@ def timer(func, *args, reps=1000, **kwargs):
     return elapsed
 
 
+print(os.getcwd())
+
+
+def test():
+    print(os.getcwd())
+    root_dir = os.getcwd()
+    file_path = '{}/app/static/file/ss/{}.json'.format(root_dir,
+                                                       get_random_str(5))
+    print(file_path)
+    file = open(file_path, 'w')
+    data = dict(id=1, name='win')
+    file.write(json.dumps(data))
+    file.flush()
+    file.close()
+
+
 if __name__ == '__main__':
     # print(check_back_card('6225768741961625'))
     # print(check_identity_card('132201199108297010'))
     # print(check_identity_card('6225768741961625'))
     # print(vars())
     # print(vars().get('get_random_str'))
-    print(vars().get('get_random_str').__dict__)
-    print(eval('get_random_str(2)'))
+    # print(vars().get('get_random_
+    test()
     pass
-#
-#
-#
+
+
 # static String getCheckCode(String idCard){
 #         static String[] Wi = { "7", "9", "10", "5", "8", "4", "2", "1", "6", "3", "7","9", "10", "5", "8", "4", "2" };
 #         int sum = 0;

@@ -15,26 +15,23 @@ from flask import request
 from flask import Blueprint
 from flask import make_response
 from flask import send_file
+from flask import render_template
 
 support_bp = Blueprint('support', __name__)
 
 
-@support_bp.route('/test', methods=['GET', 'POST', 'PUT', 'DELETE'])
-@args_required('id', 'name')
-@headers_required('version')
+@support_bp.route('/test.html')
 def test():
-    '''一级页面接口'''
-    print(request.method)
-
-    print(request.content_type)
-
-    # application / x - www - form - urlencoded
-    # application / x - www - form - urlencoded
-    res = {
-        'form': request.form,
-        'json': request.json
-    }
-    return BaseResponse.return_success(res)
+    md = """
+    ```
+<dependency>
+	<groupId>net.easyjava</groupId>
+	<artifactId>easyjava-tools</artifactId>
+	<version>[1.0.0,2.0.0]</version>
+</dependency>
+```
+    """
+    return render_template('test.html', md=md)
 
 
 @support_bp.route('/download', methods=['GET'])

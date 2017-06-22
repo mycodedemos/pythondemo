@@ -64,3 +64,4 @@ def article_list_json():
         per_page)
 
     return BaseResponse.return_success(res)
+
