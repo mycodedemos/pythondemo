@@ -43,7 +43,6 @@ class OSSClient():
         except BaseException as e:
             print(e)
             return None
-        pass
 
 
 # def put_object_from_url(bucket_name, key, url):
@@ -91,6 +90,10 @@ class OSSClient():
 
 
 if __name__ == '__main__':
-    oss = OSSClient(access_key,secret_key)
-    oss.put_object('file-easyjava-net','test/{}/{}.json'.format(date.today().isoformat(),datetime.utcnow().timestamp()),'{"id":1}')
+    oss = OSSClient(access_key, secret_key)
+    name = 'test/{}/{}.json'.format(date.today().isoformat(),
+                                    datetime.utcnow().timestamp())
+    url = oss.put_object('file-easyjava-net', name, '{"id":1}')
+    print(url)
+
     pass
