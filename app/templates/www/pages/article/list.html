@@ -1,0 +1,23 @@
+{% extends 'www/pages/article/base.html' %}
+
+{% block content %}
+    <div class="body_right">
+        <div></div>
+
+        {% for item in items %}
+            <a href="{{ item.detail_url }}" target="_blank">
+                <div class="body_right_list_div div_overflow div_bg_fff div_shade">
+                    <div class="body_right_list_div_date"><span>21{{ item.name }}</span></div>
+                    <div class="body_right_list_div_title"><span></span></div>
+                    <div class="clear"></div>
+                </div>
+            </a>
+        {% endfor %}
+{#        <div class="page_div">#}
+{#            <div class="page_prev"><span>上一页</span></div>#}
+{#            <div class="page_center"><span>1</span><span>2</span><span>3</span><b>...</b><span>10</span></div>#}
+{#            <div class="page_next"><span>下一页</span></div>#}
+{#            <div class="clear"></div>#}
+{#        </div>#}
+    </div>
+{% endblock %}

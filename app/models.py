@@ -5,12 +5,17 @@ __author__ = "wenxiaoning(371032668@qq.com)"
 __copyright__ = "Copyright of hopapapa (2017)."
 
 from app.common.base import BaseModel
+from app.common.base import BaseObject
+from app.common.security import Base64
 from app.config import db
 from app.config import BaseConfig
 from datetime import date
 from datetime import datetime
 from datetime import timedelta
 from enum import Enum
+from sqlalchemy.orm import backref as b
+from flask import url_for
+import time
 
 
 class Action(BaseModel, db.Model):
@@ -106,7 +111,7 @@ class Task(BaseModel, db.Model):
         self.name = params.get('name')
         self.type = int(type)
 
-        print(self.is_total,self.is_daily)
+        print(self.is_total, self.is_daily)
 
         if self.is_total:
             self.total_work = int(total_work)
@@ -147,7 +152,7 @@ class TaskDaily(BaseModel, db.Model):
         diff_done = 3
 
     __tablename__ = 'task_daily'
-    id = db.Column(db.INT, primary_key=True)
+    id = db.Column(db.BIGINT, primary_key=True)
     task_id = db.Column(db.VARCHAR, db.ForeignKey('task.id'), default="")
     todo_work = db.Column(db.INT, default=0)
     done_work = db.Column(db.INT, default=0)
@@ -165,11 +170,13 @@ class TaskDaily(BaseModel, db.Model):
             done_status = self.DoneStatus.done.value
         elif done_work > self.todo_work:
             diff_day = (done_work - self.todo_work) / self.task.daily_work
-            remark = '超额完成任务\n预计提前 {} 天完成任务'.format(diff_day) if self.task.is_total else ''
+            remark = '超额完成任务\n预计提前 {} 天完成任务'.format(
+                diff_day) if self.task.is_total else ''
             done_status = self.DoneStatus.over_done.value
         elif done_work < self.todo_work:
             diff_day = (self.todo_work - done_work) / self.task.daily_work
-            remark = '没有完成任务\n预计延后 {} 天完成任务'.format(diff_day) if self.task.is_total else ''
+            remark = '没有完成任务\n预计延后 {} 天完成任务'.format(
+                diff_day) if self.task.is_total else ''
             done_status = self.DoneStatus.diff_done.value
 
         self.remark = remark
@@ -184,14 +191,18 @@ class TaskDaily(BaseModel, db.Model):
 
 class Article(BaseModel, db.Model):
     __tablename__ = 'article'
-    id = db.Column(db.String, primary_key=True)
+    id = db.Column(db.BIGINT, primary_key=True)
     name = db.Column(db.String, default="")
-    category_id = db.Column(db.INT, db.ForeignKey('category.id'))
+    category = db.Column(db.INT,default="")
     tags = db.Column(db.String, default="")
     content = db.Column(db.String, default="")
     is_del = db.Column(db.INT, default=0)
-    create_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
-    update_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
+    create_ts = db.Column(db.TIMESTAMP, default=datetime.now())
+    update_ts = db.Column(db.TIMESTAMP, default=datetime.now())
+
+    @property
+    def detail_url(self):
+        return url_for('article.article_detail',id=self.id)
 
 
 class Category(BaseModel, db.Model):
@@ -202,4 +213,111 @@ class Category(BaseModel, db.Model):
     create_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
     update_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
 
-    articles = db.relationship("Article", backref="category", lazy='dynamic')
+
+
+class Video(BaseModel, db.Model):
+    __tablename__ = 'video'
+
+    id = db.Column(db.BIGINT, primary_key=True)
+    name = db.Column(db.String, default="")
+    poster = db.Column(db.String, default="")
+    is_del = db.Column(db.INT, default=0)
+    create_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
+    update_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
+
+    @property
+    def detail_url(self):
+        content = '{};{}'.format(self.id, int(time.time()))
+        return url_for('video.video_detail', id_secret=Base64.encode(content))
+
+    @classmethod
+    def query_by_secret(cls, secret):
+        id = Base64.decode(secret).split(';')[0]
+        return cls.query_item(id=id)
+
+
+class VideoSource(BaseModel, db.Model):
+    class Source(Enum):
+        SOUHU = 1
+        QQ = 2
+
+    class Type(Enum):
+        MOVIE = 'movie'
+        DRAMA = 'drama'
+        CARTOON = 'cartoon'
+        SHOW = 'show'
+
+    __tablename__ = 'video_source'
+    id = db.Column(db.BIGINT, primary_key=True)
+    video_id = db.Column(db.BIGINT, db.ForeignKey("video.id"), default=0)
+    name = db.Column(db.String, default="")
+    alias = db.Column(db.String, default="")
+    year = db.Column(db.INT, default=0)
+    publish_date = db.Column(db.DATE, doc='上传日期')
+    source = db.Column(db.INT, default=0, doc='来源')
+    type = db.Column(db.String, default='', doc='类型')
+    poster = db.Column(db.String, default="", doc="封面")
+    url = db.Column(db.String, default="", doc="地址")
+    region = db.Column(db.String, default="", doc="地区")
+    genre = db.Column(db.String, default="", doc="分类")
+    tags = db.Column(db.String, default="", doc="标签")
+    director = db.Column(db.String, default="", doc="导演")
+    actor = db.Column(db.String, default="", doc="演员")
+    description = db.Column(db.String, default="", doc="描述")
+    rating = db.Column(db.Float, default=0, doc="评分")
+    play_count = db.Column(db.INT, default=0, doc="播放量")
+    episode_count = db.Column(db.INT, default=0, doc="集数")
+    ext = db.Column(db.JSON, default={}, doc='扩展')
+    is_del = db.Column(db.INT, default=0)
+    create_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
+    update_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
+
+    video = db.relationship('Video', backref=b('sources', lazy='dynamic'))
+
+    class Ext(BaseObject):
+        genres = []
+        regions = []
+        directors = []
+        actors = []
+
+    class ExtItem(BaseObject):
+        name = ""
+        url = ""
+        poster = ""
+
+    @property
+    def is_moive(self):
+        return self.type == self.Type.MOVIE.value
+
+    @property
+    def is_drama(self):
+        return self.type == self.Type.DRAMA.value
+
+    @property
+    def is_show(self):
+        return self.type == self.Type.SHOW.value
+
+    @property
+    def is_cartoon(self):
+        return self.type == self.Type.CARTOON.value
+
+    @property
+    def episodes(self):
+        return self.ext.get('episodes', [])
+
+    @property
+    def actors(self):
+        return self.ext.get('actors')
+
+    @property
+    def directors(self):
+        return self.ext.get('directors')
+
+    @property
+    def genres(self):
+        return self.ext.get('genres')
+
+
+class Comment(BaseModel, db.Model):
+    id = db.Column(db.INT, primary_key=True)
+    resource_id = db.Column(db.INT, )

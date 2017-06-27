@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 '''views'''
 __author__ = "wenxiaoning(371032668@qq.com)"
-__copyright__ = "Copyright of hopapapa (2017)."
+__copyright__ = "Copyright of pythondemo (2017)."
 
 from app.common.security import AESecurity
 from app.models import VideoSource as VS

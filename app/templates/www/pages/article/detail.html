@@ -1,0 +1,29 @@
+{% extends 'www/pages/article/base.html' %}
+{% block content %}
+    <div class="body_right div_shade div_bg_fff">
+        <header>
+            <h1>{{ item.name }}</h1>
+            <p>{{ item.create_ts }}<span>winn</span></p>
+        </header>
+        <hr size="1" noshade="noshade" style=""/>
+        <div id="art">
+            <textarea id="content">{{ item.content }}</textarea>
+        </div>
+        <hr size="1" noshade="noshade" style=""/>
+        <footer>
+            <span class="footer_left div_overflow">PREV:深圳格故事</span>
+            <span class="footer_right div_overflow">NEXT:格式会</span>
+        </footer>
+    </div>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/marked.js"></script>
+    <script>
+        $(function () {
+            console.log($("#content").text())
+            var mdContent = marked($("#content").text());
+            console.log(mdContent);
+            document.getElementById('art').innerHTML = mdContent;
+        })
+
+    </script>
+{% endblock %}

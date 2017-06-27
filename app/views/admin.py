@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 '''views'''
 __author__ = "wenxiaoning(371032668@qq.com)"
-__copyright__ = "Copyright of hopapapa (2017)."
+__copyright__ = "Copyright of pythondemo (2017)."
 
 from app.models import Task
 from app.models import Article
@@ -26,8 +26,9 @@ def index():
 def article_edit_html():
     '''文章修改页面'''
     id = BaseRequest.get_args().get('id')
+    print(id)
     return render_template('admin/pages/article/edit.html',
-                           article=Article.query_item(id=id))
+                           item=Article.query_item(id=id))
 
 
 @index_bp.route('/article/list.html')

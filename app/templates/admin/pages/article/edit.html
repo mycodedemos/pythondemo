@@ -9,7 +9,8 @@
       href="https://unpkg.com/element-ui/lib/theme-default/index.css">
 
 <body>
-
+<input id="itemId" value="{{ item.id }}">
+{{ item.id }}
 <div id="app">
 
     <el-form id="el-form" ref="form" :model="form" label-width="80px">
@@ -54,7 +55,7 @@
     editor.create()
     $(function () {
         $.ajax({
-            url: "/restful/article/{{ article.id }}",
+            url: "/restful/article/"+$("#itemId").val(),
             dataType: "jsonp",
             type: "get",
             success: function (data) {
@@ -67,7 +68,7 @@
     function initData(data) {
         data = data['data']
         console.log(data)
-        editor.txt.html(data['content'])
+        editor.txt.html(data['content']);
         var Main = {
             data() {
                 return {

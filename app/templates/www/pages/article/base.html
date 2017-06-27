@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>温暖如春</title>
+    <link type="text/css" rel="stylesheet" href="/static/css/admin.css" media="screen"/>
+
+</head>
+
+<body>
+<!--div_body-->
+<div class="div_body">
+    <!--body_top-->
+    <div class="body_top div_shade div_bg_fff">
+        <div class="body_top_left">温暖如春</div>
+        <div class="body_top_right">
+            <ul>
+                {% for category in categorys %}
+                    <li><a href="{{ category.url }}">{{ category.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="body_center">
+        <!--left-->
+        <div class="body_left div_shade div_bg_fff">
+            <div class="image_div image_wrap">
+                <img src="/static/images/face1.jpg" alt="头像" width="128" height="128" class="image_wrap">
+            </div>
+            <div class="ol_div">
+                <ol>
+                    <li>姓名：wenn</li>
+                    <li>职业：java工程师</li>
+                    <li>爱好：老婆、周杰伦、电影、英雄联盟</li>
+                    <li>简介：<p>本站技术构架纯手打，意在保存展示技术博客和两个人的纪念日等文章</p></li>
+                </ol>
+            </div>
+            <hr size="1" noshade="noshade" style=""/>
+            <div class="near_article_div">
+                <div class="near_article_div_1">
+                    <span>近期文章</span>
+                </div>
+                <div class="near_article_div_2">
+                    {% for item in new_items %}
+                        <a href="{{ item.detail_url }}"><p>{{ item.name }}</p></a>
+                        <hr size="1" noshade="noshade" style=""/>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <!--right-->
+    {% block content %}
+{#        <div class="body_right">#}
+{#            <div></div>#}
+{##}
+{#            {% for article in articles %}#}
+{#                <div class="body_right_list_div div_overflow div_bg_fff div_shade">#}
+{#                    <div class="body_right_list_div_date"><span>21</span></div>#}
+{#                    <div class="body_right_list_div_title"><span>13&nbsp;article.title</span></div>#}
+{#                    <div class="clear"></div>#}
+{#                </div>#}
+{#            {% endfor %}#}
+{#            <div class="page_div">#}
+{#                <div class="page_prev"><span>上一页</span></div>#}
+{#                <div class="page_center"><span>1</span><span>2</span><span>3</span><b>...</b><span>10</span></div>#}
+{#                <div class="page_next"><span>下一页</span></div>#}
+{#                <div class="clear"></div>#}
+{#            </div>#}
+{#        </div>#}
+    {% endblock %}
+
+        <div class="clear"></div>
+    </div>
+
+    <!--body_button-->
+    <div class="body_button div_shade div_bg_fff">
+        © 2015 wennspring.com 版权所有 <a href="http://www.miitbeian.gov.cn/" target="_blank">京ICP备15062634号-1</a>
+    </div>
+    <div class="clear"></div>
+</div>
+</body>
+<!--<script type="text/javascript" src="/static/js/lib/jquery-1.10.2.min.js"></script>-->
+<!--<script type="text/javascript" src="../js/constant.js"></script>-->
+<!--<script type="text/javascript" src="../js/jquery.article.list.js"></script>-->
+</html>

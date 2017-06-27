@@ -15,15 +15,13 @@ endpoint = 'http://oss-cn-beijing.aliyuncs.com'
 BUCKET_IMG = 'img-easyjava-net'
 
 
-# auth = oss2.Auth(access_key, secret_key)
-# service = oss2.Service(auth, endpoint)
-# oss2.CaseInsensitiveDict
-
 class OSSClient():
-    def __init__(self, access_key, secret_key):
+    def __init__(self, access_key='9I1VpgURzvT6t7Zb',
+                 secret_key='JVXlHhYcZbFJ0cqLxJs9ySLo0IZuak'):
         self.auth = oss2.Auth(access_key, secret_key)
 
-    def put_object(self, bucket_name, key, data, headers=None):
+    def put_object(self, bucket_name, key, data, headers=None,
+                   progress_callback=None):
         """
         上传文本到aliyun
         :param bucket_name:
@@ -34,7 +32,8 @@ class OSSClient():
         """
         try:
             bucket = oss2.Bucket(self.auth, endpoint, bucket_name)
-            result = bucket.put_object(key, data, headers=headers)
+            result = bucket.put_object(key, data, headers=headers,
+                                       progress_callback=progress_callback)
             print(result)
             if result.status == 200:
                 return 'http://%s/%s' % (bucket_name.replace('-', '.'), key)
