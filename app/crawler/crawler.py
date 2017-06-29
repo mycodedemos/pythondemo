@@ -318,3 +318,5 @@ if __name__ == '__main__':
 
     soup = bs(requests.get(url).content,'lxml')
     print(soup)
+
+

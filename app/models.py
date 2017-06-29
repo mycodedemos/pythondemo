@@ -13,8 +13,8 @@ from datetime import date
 from datetime import datetime
 from datetime import timedelta
 from enum import Enum
-from sqlalchemy.orm import backref as b
 from flask import url_for
+from sqlalchemy.orm import backref as b
 import time
 
 
