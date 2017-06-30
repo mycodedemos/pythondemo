@@ -193,7 +193,7 @@ class Article(BaseModel, db.Model):
     __tablename__ = 'article'
     id = db.Column(db.BIGINT, primary_key=True)
     name = db.Column(db.String, default="")
-    category = db.Column(db.INT,default="")
+    category = db.Column(db.INT, default="")
     tags = db.Column(db.String, default="")
     content = db.Column(db.String, default="")
     is_del = db.Column(db.INT, default=0)
@@ -202,7 +202,7 @@ class Article(BaseModel, db.Model):
 
     @property
     def detail_url(self):
-        return url_for('article.article_detail',id=self.id)
+        return url_for('article.article_detail', id=self.id)
 
 
 class Category(BaseModel, db.Model):
@@ -212,7 +212,6 @@ class Category(BaseModel, db.Model):
     is_del = db.Column(db.INT, default=0)
     create_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
     update_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
-
 
 
 class Video(BaseModel, db.Model):
@@ -269,8 +268,8 @@ class VideoSource(BaseModel, db.Model):
     episode_count = db.Column(db.INT, default=0, doc="集数")
     ext = db.Column(db.JSON, default={}, doc='扩展')
     is_del = db.Column(db.INT, default=0)
-    create_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
-    update_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
+    create_ts = db.Column(db.TIMESTAMP, default=datetime.now())
+    update_ts = db.Column(db.TIMESTAMP, default=datetime.now())
 
     video = db.relationship('Video', backref=b('sources', lazy='dynamic'))
 
@@ -318,6 +317,16 @@ class VideoSource(BaseModel, db.Model):
         return self.ext.get('genres')
 
 
-class Comment(BaseModel, db.Model):
-    id = db.Column(db.INT, primary_key=True)
-    resource_id = db.Column(db.INT, )
+class ActionMovie(BaseModel, db.Model):
+    __tablename__ = 'action_movie'
+
+    id = db.Column(db.BIGINT, primary_key=True)
+    name = db.Column(db.String, default="")
+    source = db.Column(db.INT, default=0, doc='来源')
+    poster = db.Column(db.String, default="", doc="封面")
+    album_url = db.Column(db.String, default="", doc="专辑地址")
+    album_name = db.Column(db.String, default="", doc="专辑名称")
+    url = db.Column(db.String, default="", doc="地址")
+    download_url = db.Column(db.String, default="", doc="下载地址")
+    is_del = db.Column(db.INT, default=0)
+    create_ts = db.Column(db.TIMESTAMP, default=datetime.now())

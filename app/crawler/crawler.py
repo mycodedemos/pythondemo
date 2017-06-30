@@ -9,6 +9,7 @@ __copyright__ = "Copyright of hopapapa (2017)."
 
 from app.common.base import BaseObject
 from app.models import VideoSource as VS
+from app.models import ActionMovie as AM
 from bs4 import BeautifulSoup as bs
 from bs4.element import Tag
 from datetime import date
@@ -185,7 +186,6 @@ class QQ(BaseCrawler):
         elif 'search' in url:
             self.parser_search(url)
 
-
     def parser_item(self, url):
         soup = self.generator_soup(url)
 
@@ -305,6 +305,40 @@ class QQ(BaseCrawler):
 class Maomiav():
     pass
 
+
+class Hk145(BaseCrawler):
+    ROOT = 'https://www.145hk.com{}'
+
+    def parser_item(self, url):
+        soup = self.generator_soup(url)
+
+        url = url[url.find('com') + 3:]
+        item = AM.query_item(url=url)
+        if not item:
+            item = AM(url=url, source=1)
+
+        item.name = soup.select_one('dd.film_title').get_text()
+        album = soup.select_one('span.cat_pos_l')
+        album = list(album.children)[3]
+        item.album_name = album.string
+        item.album_url = album['href']
+        item.download_url = soup.select_one('ul.downurl').select_one('a')[
+            'href']
+        item.poster = soup.select_one('img')['src']
+        item.create_self()
+        print(item)
+
+    def parser_list(self, url):
+        soup = self.generator_soup(url)
+        a = soup.select('a')
+        for o in a:
+            if o.attrs.get('target') == '_blank' and 'Html' in o.attrs.get(
+                    'href'):
+                self.parser_item(Hk145.ROOT.format(o['href']))
+
+
+
+
 if __name__ == '__main__':
     parer = QQ()
     # item = parer.parser_item('https://v.qq.com/detail/z/zwyy7umzhkroixx.html')
@@ -314,9 +348,7 @@ if __name__ == '__main__':
     # parer.parser_item('http://v.qq.com/detail/i/iectcu0y1nv0vp5.html')
     # parer.parser_search('http://v.qq.com/detail/c/cymqf1mz55umyqy.html')
 
-    url = 'http://www.698AA.com/htm/index.htm'
+    parer = Hk145()
 
-    soup = bs(requests.get(url).content,'lxml')
-    print(soup)
-
-
+    parer.parser_list('https://www.145hk.com/Html/94/')
+    # parer.parser_list('https://www.145hk.com/Html/94/index-11.html')
