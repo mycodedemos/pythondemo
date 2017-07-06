@@ -6,23 +6,21 @@ from sqlalchemy import desc
 __author__ = "wenxiaoning(wenxiaoning@gochinatv.com)"
 __copyright__ = "Copyright of GoChinaTV (2017)."
 
-from sqlalchemy.ext.declarative import DeclarativeMeta
-from uuid import UUID
-from datetime import datetime, date
-from flask import make_response
-from flask import jsonify
-from flask import request
-
-import json
-import pymysql.cursors
-import time
-
 from app.config import app
 from app.config import db
 from app.config import snowflake
 from app.common.security import AESecurity
-from app.common import utils
+from datetime import datetime, date
+from flask import make_response
+from flask import jsonify
+from flask import request
+from uuid import UUID
+from sqlalchemy.ext.declarative import DeclarativeMeta
 from urllib.parse import urlparse
+import traceback
+import json
+import pymysql.cursors
+import time
 
 URL_CONFIG = urlparse(app.config['SQLALCHEMY_DATABASE_URI'])
 
@@ -189,8 +187,8 @@ class BaseDB():
             result = cursor.fetchall()
             cursor.close()
             return result
-        except BaseException as e:
-            app.logger.error(e)
+        except:
+            app.logger.error(traceback.format_exc())
             return []
         finally:
             conn.close()
@@ -211,8 +209,8 @@ class BaseDB():
             conn.commit()
             cursor.close()
             return result
-        except BaseException as e:
-            app.logger.error(e)
+        except:
+            app.logger.error(traceback.format_exc())
             return False
         finally:
             conn.close()
@@ -371,8 +369,8 @@ class UserSecurity():
                 return None
             data = cls.aes.decrypt(authorization)
             return data.split(';')[0]
-        except BaseException as e:
-            app.logger.error(e)
+        except:
+            app.logger.error(traceback.format_exc())
             return None
 
 

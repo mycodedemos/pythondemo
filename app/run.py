@@ -16,6 +16,7 @@ from app.models import Task
 from app.models import TaskDaily
 
 from flask_restless import APIManager
+import traceback
 
 # restful
 URL_PREFIX = BaseConfig.APPLICATION_ROOT_RESTFUL
@@ -31,5 +32,5 @@ manager.create_api(TaskDaily, url_prefix=URL_PREFIX, methods=['GET'])
 
 @app.errorhandler(Exception)
 def app_error_handler(e):
-    app.logger.error(e)
+    app.logger.error(traceback.format_exc())
     return BaseResponse.return_internal_server_error(str(e))

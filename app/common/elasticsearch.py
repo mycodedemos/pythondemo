@@ -4,14 +4,14 @@
 __author__ = "wenxiaoning(wenxiaoning@gochinatv.com)"
 __copyright__ = "Copyright of GoChinaTV (2017)."
 
-import time
-
+from app.config import app
 from elasticsearch.client import query_params
 from elasticsearch import Elasticsearch
 from elasticsearch import TransportError
 from elasticsearch import helpers
 from elasticsearch import RequestsHttpConnection
-from app.config import app
+import time
+import traceback
 
 es = Elasticsearch(
     hosts=[{'host': app.config['ES_HOST'], 'port': app.config['ES_PORT']}],
@@ -27,8 +27,8 @@ def create_index(index, doc_type, id, body):
     try:
         es.create(index=index, doc_type=doc_type, id=id, body=body)
         return True
-    except TransportError as e:
-        app.logger.error(e)
+    except:
+        app.logger.error(traceback.format_exc())
         return False
 
 
@@ -50,8 +50,8 @@ def bulk_create_index(index, doc_type, bodys):
         actions = make_actions(index, doc_type, 'create', bodys)
         helpers.bulk(es, actions)
         return True
-    except TransportError as e:
-        app.logger.error(e)
+    except:
+        app.logger.error(traceback.format_exc())
         return False
 
 
@@ -61,8 +61,8 @@ def bulk_delete_index(index, doc_type, bodys):
         actions = make_actions(index, doc_type, 'delete', bodys)
         helpers.bulk(es, actions)
         return True
-    except TransportError as e:
-        app.logger.error(e)
+    except:
+        app.logger.error(traceback.format_exc())
         return False
 
 
@@ -76,8 +76,8 @@ def get_index(index, doc_type, id, params=None):
             id=id,
             params=params
         )
-    except TransportError as e:
-        app.logger.error(e)
+    except:
+        app.logger.error(traceback.format_exc())
         return None
 
 
@@ -86,8 +86,8 @@ def delete_index(index, doc_type, id):
     try:
         es.delete(index=index, doc_type=doc_type, id=id)
         return True
-    except TransportError as e:
-        app.logger.error(e)
+    except:
+        app.logger.error(traceback.format_exc())
         return False
 
 
@@ -96,8 +96,8 @@ def delete_index_by_type(index, doc_type):
     try:
         res = es.delete_by_query(index=index, doc_type=doc_type, body={})
         return True
-    except TransportError as e:
-        app.logger.error(e)
+    except:
+        app.logger.error(traceback.format_exc())
         return False
 
 
@@ -170,9 +170,9 @@ def search(index=None, doc_type=None, body=None, params=None):
         total = int(data['hits']['total'])
 
         return results, total
-    except TransportError as e:
+    except:
         app.logger.error(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
-        app.logger.error(e)
+        app.logger.error(traceback.format_exc())
         return [], 0
 
 
@@ -180,6 +180,6 @@ def exists(index, doc_type, id):
     '''判断索引是否存在'''
     try:
         return es.exists(index=index, doc_type=doc_type, id=id)
-    except TransportError as e:
-        app.logger.error(e)
+    except:
+        app.logger.error(traceback.format_exc())
         return False

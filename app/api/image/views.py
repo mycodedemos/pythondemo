@@ -4,7 +4,6 @@
 __author__ = "wenxiaoning(371032668@qq.com)"
 __copyright__ = "Copyright of hopapapa (2017)."
 
-
 from app.config import app
 from app.config import BaseConfig
 from app.common.base import BaseResponse
@@ -17,6 +16,8 @@ from flask import request
 from flask import Blueprint
 from flask import g
 
+import traceback
+
 image_bp = Blueprint('image', __name__)
 
 
@@ -27,7 +28,7 @@ def image_list():
     args = request.args
     page = BaseRequest.get_arg_int(args, 'page', BaseConfig.DEFAULT_PAGE)
     per_page = BaseRequest.get_arg_int(args, 'per_page',
-                                         BaseConfig.DEFAULT_PER_PAGE)
+                                       BaseConfig.DEFAULT_PER_PAGE)
     paginate = Image.query_paginate(
         page=page,
         per_page=per_page
@@ -42,8 +43,8 @@ def image_list():
                 item_id=item['id'],
                 item_type=BaseConfig.TYPE_ITEM_IMAGE
             )
-    except BaseException as e:
-        app.logger.error(e)
+    except:
+        app.logger.error(traceback.format_exc())
     res = BaseResponse.make_paginate(items, paginate.total, page, per_page)
 
     return BaseResponse.return_success(res)
