@@ -9,6 +9,7 @@ import random
 import time
 import os
 import json
+from math import radians, cos, sin, asin, sqrt
 
 RE_CHINESE = re.compile(u"[\u4e00-\u9fa5]+")  # 正则查找中文
 RE_ENGLISH = re.compile(u"[A-Za-z]+")  # 正则查找英文
@@ -205,9 +206,6 @@ def timer(func, *args, reps=1000, **kwargs):
     return elapsed
 
 
-print(os.getcwd())
-
-
 def test():
     print(os.getcwd())
     root_dir = os.getcwd()
@@ -221,6 +219,25 @@ def test():
     file.close()
 
 
+def distance_for_points(lat1, lon1, lat2, lon2):
+    """
+    Calculate the great circle distance between two points
+    on the earth (specified in decimal degrees)
+    """
+    # 将十进制度数转化为弧度
+    lon1, lat1, lon2, lat2 = map(radians,
+                                 [float(lon1), float(lat1), float(lon2),
+                                  float(lat2)])
+
+    # haversine公式
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
+    c = 2 * asin(sqrt(a))
+    r = 6371  # 地球平均半径，单位为公里
+    return c * r * 1000
+
+
 if __name__ == '__main__':
     # print(check_back_card('6225768741961625'))
     # print(check_identity_card('132201199108297010'))
@@ -228,23 +245,6 @@ if __name__ == '__main__':
     # print(vars())
     # print(vars().get('get_random_str'))
     # print(vars().get('get_random_
-    test()
+    print(distance_for_points(39.7836455948, 116.5627747582, 39.7833570280,
+                              116.5636974381))
     pass
-
-
-# static String getCheckCode(String idCard){
-#         static String[] Wi = { "7", "9", "10", "5", "8", "4", "2", "1", "6", "3", "7","9", "10", "5", "8", "4", "2" };
-#         int sum = 0;
-#         for( int i = 0 ; i < 17 ; i ++)
-#         {
-#             sum = sum + Integer.parseInt(String.valueOf(idCard.charAt(i))) * Integer.parseInt(String.valueOf(Wi[i]));
-#         }
-#         int T  = sum % 11;
-#         int R = (12 -T) % 11;
-#         if( R == 10 )
-#             return "X";
-#         else {
-#             return String.valueOf(R);
-#         }
-#     }
-#

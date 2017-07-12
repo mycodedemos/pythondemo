@@ -7,10 +7,9 @@
 <!-- 引入样式 -->
 <link rel="stylesheet"
       href="https://unpkg.com/element-ui/lib/theme-default/index.css">
-
+<link rel="stylesheet" href="/static/css/editormd.min.css"/>
 <body>
 <input id="itemId" value="{{ item.id }}">
-{{ item.id }}
 <div id="app">
 
     <el-form id="el-form" ref="form" :model="form" label-width="80px">
@@ -22,14 +21,15 @@
             <el-input v-model="form.name" style="width: 100px"></el-input>
         </el-form-item>
         <el-form-item label="类型">
-            <el-input v-model="form.category_id" style="width: 100px"></el-input>
+            <el-input v-model="form.category_id"
+                      style="width: 100px"></el-input>
         </el-form-item>
         <el-form-item label="标签">
             <el-input v-model="form.tags" style="width: 100px"></el-input>
         </el-form-item>
         <el-form-item label="内容">
-            <div id="editor">
-                <p>欢迎使用 <b>wangEditor</b> 富文本编辑器</p>
+            <div id="editormd">
+                <textarea style="display:none;">### Hello Editor.md !</textarea>
             </div>
         </el-form-item>
         <el-form-item>
@@ -42,20 +42,19 @@
 </body>
 <!-- 引入组件库 -->
 <!-- 引入组件库 -->
-<script src="/static/js/jquery.js"></script>
 <script src="/static/js/jquery.min.js"></script>
 <script src="/static/js/vue.js"></script>
 <script src="/static/js/element/index.js"></script>
+<script src="/static/js/editormd.min.js"></script>
 <script src="/static/js/utils.js"></script>
-<script type="text/javascript" src="/static/js/wangEditor.min.js"></script>
 <script>
-    var item_id = getValue('id');
-    var E = window.wangEditor;
-    var editor = new E('#editor')
-    editor.create()
     $(function () {
+        console.log($("#itemId").val())
+        var editor = editormd("editormd", {
+            path: "/static/lib/" // Autoload modules mode, codemirror, marked... dependents libs path
+        });
         $.ajax({
-            url: "/restful/article/"+$("#itemId").val(),
+            url: "/restful/article/" + $("#itemId").val(),
             dataType: "jsonp",
             type: "get",
             success: function (data) {
@@ -68,25 +67,20 @@
     function initData(data) {
         data = data['data']
         console.log(data)
-        editor.txt.html(data['content']);
         var Main = {
             data() {
                 return {
                     form: {
-                        id:data['id'],
-                        name:data['name'],
-                        category_id:data['category_id'],
-                        content:data['content']
+                        id: data['id'],
+                        name: data['name'],
+                        category_id: data['category_id'],
+                        content: data['content']
                     }
                 }
             },
             methods: {
                 onSubmit(e) {
-                    console.log(editor.txt.text())
-                    console.log(editor.txt.html())
                     var formData = this.form
-                    console.log(formData)
-                    formData['content'] = editor.txt.html()
                     $.ajax({
                         url: "/article/edit.json",
                         type: "post",
