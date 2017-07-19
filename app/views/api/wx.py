@@ -25,10 +25,10 @@ def mp_callback():
 
     if request.method == 'POST':
         app.logger.debug(request.data)
-        # data = json.loads(json.dumps(xmltodict.parse(request.data)))['xml']
-        # app.logger.debug(data)
+        data = json.loads(json.dumps(xmltodict.parse(request.data)))
+        app.logger.debug(data)
         # return Response(request.data.decode(),mimetype='text/xml;charset=utf-8')
-        response = make_response(request.data)
+        response = make_response(xmltodict.unparse(data))
         response.headers['Content-Type'] = 'text/xml; charset=utf-8'
         return response
     return ""
