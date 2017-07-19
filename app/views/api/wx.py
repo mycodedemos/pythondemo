@@ -27,6 +27,11 @@ def mp_callback():
         app.logger.debug(request.data)
         data = json.loads(json.dumps(xmltodict.parse(request.data)))
         app.logger.debug(data)
+        openid = request.args.get('openid')
+        ToUserName = data['xml']['ToUserName']
+        data['xml']['ToUserName'] = openid
+        data['xml']['FromUserName'] = ToUserName
+
         # return Response(request.data.decode(),mimetype='text/xml;charset=utf-8')
         response = make_response(xmltodict.unparse(data))
         response.headers['Content-Type'] = 'text/xml; charset=utf-8'
