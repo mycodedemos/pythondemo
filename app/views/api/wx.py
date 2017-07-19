@@ -21,6 +21,7 @@ def mp_callback():
     app.logger.debug(request.json)
     app.logger.debug(request.form)
     app.logger.debug(request.data)
+    print(request.data)
     if request.method == 'GET':
         return request.args.get('echostr', "success")
 
