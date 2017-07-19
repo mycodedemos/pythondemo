@@ -26,6 +26,6 @@ def mp_callback():
         app.logger.debug(request.data)
         data = json.loads(json.dumps(xmltodict.parse(request.data)))['xml']
         app.logger.debug(data)
-        return Response(request.data,mimetype='text/xml')
+        return Response(request.data.decode(),mimetype='text/xml;charset=utf-8')
 
     return ""
