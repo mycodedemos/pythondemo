@@ -9,9 +9,6 @@ from app.common.third.wx import MediaPlatform
 from app.common.decorator import response_xml
 from flask import Blueprint
 from flask import request
-from flask import make_response
-import xmltodict
-import json
 
 wx_bp = Blueprint('wx', __name__)
 mp = MediaPlatform()
