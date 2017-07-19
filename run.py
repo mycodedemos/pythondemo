@@ -17,8 +17,9 @@ import time
 def before_request():
     g.request_start_time = time.time()
     app.logger.debug(
-        '{} {}\nargs:{}\nheaders:{}'.format(
-            request.method, request.url, BaseRequest.get_args(), request.headers
+        '{} {}\nargs:{}data:{}\nheaders:{}'.format(
+            request.method, request.url, BaseRequest.get_args(), request.data,
+            request.headers
         )
     )
     # ip
@@ -36,6 +37,8 @@ def after_request(response):
     ))
 
     return response
+
+
 # api
 URL_PREFIX = BaseConfig.APPLICATION_ROOT
 app.register_blueprint(wx_bp, url_prefix=URL_PREFIX)
