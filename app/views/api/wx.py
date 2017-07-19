@@ -8,24 +8,23 @@ from app.config import app
 from app.common.base import BaseResponse
 from flask import Blueprint
 from flask import request
+import xmltodict
+import json
 
 wx_bp = Blueprint('wx', __name__)
 
 
-@wx_bp.route('/wx/mp_callback',methods=['GET','POST'])
+@wx_bp.route('/wx/mp_callback', methods=['GET', 'POST'])
 def mp_callback():
     '''公众号回调地址'''
     app.logger.debug(request.remote_addr)
-    app.logger.debug(request.method)
-    app.logger.debug(request.args)
-    app.logger.debug(request.json)
-    app.logger.debug(request.form)
-    app.logger.debug(request.data)
-    print(request.data)
     if request.method == 'GET':
         return request.args.get('echostr', "success")
 
     if request.method == 'POST':
         app.logger.debug(request.data)
+        data = json.loads(json.dumps(xmltodict.parse(request.data)))['xml']
+        app.logger.debug(data)
+        return request.data
 
     return ""
