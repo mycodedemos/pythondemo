@@ -24,4 +24,7 @@ def mp_callback():
     if request.method == 'GET':
         return request.args.get('echostr', "success")
 
+    if request.method == 'POST':
+        app.logger.debug(request.data)
+
     return BaseResponse.return_success()

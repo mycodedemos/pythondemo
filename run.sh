@@ -9,6 +9,7 @@ deploy_tag(){
     echo '********开始部署api：'
     echo '******************************'
 #    kill -9 `ps aux | grep gunicorn | awk '{print $2}'`
+    git pull
     source env.sh
     gunicorn -w 2  -b 0.0.0.0:8000 run:app
 #    --access-logfile access.log \
