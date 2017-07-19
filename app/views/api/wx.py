@@ -5,8 +5,8 @@ __author__ = "wenxiaoning(371032668@qq.com)"
 __copyright__ = "Copyright of pythondemo (2017)."
 
 from app.config import app
-from app.common.base import BaseResponse
 from app.common.third.wx import MediaPlatform
+from app.common.decorator import response_xml
 from flask import Blueprint
 from flask import request
 from flask import make_response
@@ -18,6 +18,7 @@ mp = MediaPlatform()
 
 
 @wx_bp.route('/wx/mp_callback', methods=['GET', 'POST'])
+@response_xml
 def mp_callback():
     '''公众号回调地址'''
     app.logger.debug(request.remote_addr)
@@ -25,10 +26,7 @@ def mp_callback():
         return request.args.get('echostr', "success")
 
     if request.method == 'POST':
-        app.logger.debug(request.data)
         msg = mp.Message(request.data)
 
-        response = make_response(msg.reply_text('hahah'))
-        response.headers['Content-Type'] = 'text/xml; charset=utf-8'
-        return response
+        return msg.reply_text('hahah')
     return ""

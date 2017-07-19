@@ -8,6 +8,7 @@ from datetime import timedelta
 from flask import make_response
 from flask import current_app
 from flask import request
+from flask import Response
 from flask import g
 from functools import wraps
 from functools import update_wrapper
@@ -134,3 +135,12 @@ def headers_required(*params):
         return _wrapped
 
     return _wrapper
+
+
+def response_xml(func):
+    @wraps(func)
+    def _w(*args, **kwargs):
+        return Response(func(*args, **kwargs),
+                        content_type='text/xml; charset=utf-8')
+
+    return _w

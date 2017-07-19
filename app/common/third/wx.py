@@ -91,6 +91,7 @@ class MediaPlatform():
     class Message():
         class MsgType(Enum):
             text = 'text'
+            news = 'news'
 
         def __init__(self, xml_input):
             data = json.loads(json.dumps(xmltodict.parse(xml_input)))['xml']
@@ -104,12 +105,20 @@ class MediaPlatform():
             return self.msg_type == self.MsgType.text.value
 
         def reply_text(self, content):
-            return xmltodict.unparse(dict(
-                xml=dict(
-                    ToUserName=self.sender_id,
-                    FromUserName=self.owner_id,
-                    CreateTime=int(datetime.now().timestamp()),
-                    MsgType=self.MsgType.text.value,
-                    Content=content
-                )
-            ))
+            return self._generator_reply(content)
+
+        def _generator_reply(self, *args, **kwargs):
+            content = args[0] if args else kwargs.get('content')
+            msg_type = kwargs.get('msg_type') or self.MsgType.text.value
+
+            xml = dict(
+                ToUserName=self.sender_id,
+                FromUserName=self.owner_id,
+                CreateTime=int(datetime.now().timestamp()),
+                MsgType=msg_type
+            )
+
+            if msg_type == self.MsgType.text.value:
+                xml['Content'] = content
+
+            return xmltodict.unparse({"xml": xml})
