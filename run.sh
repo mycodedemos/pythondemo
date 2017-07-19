@@ -10,9 +10,9 @@ deploy_tag(){
     echo '******************************'
 #    kill -9 `ps aux | grep gunicorn | awk '{print $2}'`
     source env.sh
-    gunicorn -w 4 -k gevent -b 0.0.0.0:8001 \
-    --access-logfile access.log \
-     run:app
+    gunicorn -w 2  -b 0.0.0.0:8000 run:app
+#    --access-logfile access.log \
+
     echo '******************************'
     echo '********部署成功'
     echo '******************************'

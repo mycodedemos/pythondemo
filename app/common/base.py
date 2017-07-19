@@ -322,32 +322,55 @@ class BaseDict(dict):
         source_include = args if args else kwargs.get('source_include')
         source_exclude = kwargs.get('source_exclude')
 
+        def _filter(t, o, k):
+            """
+            过滤key
+            :param t: 过滤结果
+            :param o: 目标对象
+            :param k: 需要过滤的key
+            :return:
+            """
+            if k in o:
+                t[k] = o[k]
+            return t
+
+        def _check_key(t, o, k):
+            """
+            判断key需要何种过滤
+            :param t: 过滤结果
+            :param o: 目标对象
+            :param k: 需要过滤的key
+            :return:
+            """
+            if '.' in k:
+                key = k.split('.', 1)[0]
+                sub_key = k.split('.', 1)[1]
+                if o.get(key) and isinstance(o.get(key), dict):
+                    if key not in t:
+                        t[key] = {}
+                    t[key] = _check_key(t[key], o[key], sub_key)
+            elif '[' in k and ']' in k:
+                key = k.split('[')[0]
+                v = o.get(key)
+                sub_keys = k.split('[')[1].rstrip(']').split(',')
+                if isinstance(v, dict):
+                    t[key] = BaseDict(v).filter(*sub_keys)
+                elif isinstance(v, list):
+                    t[key] = [BaseDict(sv).filter(*sub_keys) for sv in v]
+            else:
+                t = _filter(t, o, k)
+
+            return t
+
         temp = {}
         if source_include:
             for item in source_include:
-                if '.' in item:
-                    key = item.split('.')[0]
-                    sub_key = item.split('.')[1]
-                    if self[key] and isinstance(self[key], dict):
-                        if key not in temp:
-                            temp[key] = {}
-                        temp[key][sub_key] = self[key][sub_key]
-                elif '[' in item and ']' in item:
-                    key = item.split('[')[0]
-                    v = self[key]
-                    sub_keys = item.split('[')[1].rstrip(']').split(',')
-                    if isinstance(v, dict):
-                        temp[key] = BaseDict(v).filter(*sub_keys)
-                    elif isinstance(v, list):
-                        temp[key] = [BaseDict(sv).filter(*sub_keys) for sv in v]
-                else:
-                    temp[item] = self.get(item)
+                temp = _check_key(temp, self, item)
             return temp
         elif source_exclude:
             for item in source_exclude:
                 self.pop(item)
             return self
-
         return self
 
 
