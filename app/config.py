@@ -47,6 +47,10 @@ class BaseConfig(object):
 
     APPLICATION_ROOT_ADMIN = '/admin/v1'
 
+    WX_MP_APP_ID = 'wxb5ae283f932d1ae0'
+    WX_MP_APP_SECRET = '720233db12f8d6dadaa9979c49418e8d'
+    WX_MP_ID = 'gh_96c685096fbd'
+
 
 def create_app(flask_config_name=None):
     """
