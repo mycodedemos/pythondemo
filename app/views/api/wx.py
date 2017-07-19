@@ -8,6 +8,7 @@ from app.config import app
 from app.common.base import BaseResponse
 from flask import Blueprint
 from flask import request
+from flask import Response
 import xmltodict
 import json
 
@@ -25,6 +26,6 @@ def mp_callback():
         app.logger.debug(request.data)
         data = json.loads(json.dumps(xmltodict.parse(request.data)))['xml']
         app.logger.debug(data)
-        return request.data
+        return Response(request.data,mimetype='text/xml')
 
     return ""
