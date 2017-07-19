@@ -17,7 +17,7 @@ import time
 def before_request():
     g.request_start_time = time.time()
     app.logger.debug(
-        '{} {}\nargs:{}data:{}\nheaders:{}'.format(
+        '{} {}\nargs:{}\ndata:{}\nheaders:{}'.format(
             request.method, request.url, BaseRequest.get_args(), request.data,
             request.headers
         )

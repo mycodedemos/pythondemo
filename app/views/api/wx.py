@@ -12,7 +12,7 @@ from flask import request
 wx_bp = Blueprint('wx', __name__)
 
 
-@wx_bp.route('/wx/mp_callback')
+@wx_bp.route('/wx/mp_callback',methods=['GET','POST'])
 def mp_callback():
     '''公众号回调地址'''
     app.logger.debug(request.remote_addr)
