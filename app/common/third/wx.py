@@ -109,9 +109,10 @@ class MediaPlatform():
             """回复文本"""
             return self._generator_reply(content)
 
-        def reply_news(self):
+        def reply_news(self, news):
             """回复图文消息"""
-            return self._generator_reply(msg_type=self.MsgType.news.value)
+            return self._generator_reply(msg_type=self.MsgType.news.value,
+                                         news=news)
 
         def _generator_reply(self, *args, **kwargs):
             content = args[0] if args else kwargs.get('content')

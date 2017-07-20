@@ -31,6 +31,6 @@ def mp_callback():
                 n1 = msg.New('t1',
                              'http://vegoplus.s3-website-us-west-2.amazonaws.com/B321/0.jpg',
                              'http://baidu.com')
-                return msg.reply_news(news=[n1,n1])
+                return msg.reply_news(news=[n1, n1])
         return msg.reply_text('hahah')
     return ""
