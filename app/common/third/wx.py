@@ -5,6 +5,7 @@
 __author__ = "wenxiaoning(371032668@qq.com)"
 __copyright__ = "Copyright of pythondemo (2017)."
 
+from app.common.base import BaseObject
 from app.config import app
 from app.config import BaseConfig
 from datetime import datetime
@@ -126,14 +127,16 @@ class MediaPlatform():
             if msg_type == self.MsgType.text.value:
                 xml['Content'] = content
             elif msg_type == self.MsgType.news.value:
-                items = [dict(Title='title1', Description='描述',
-                              PicUrl='http://vegoplus.s3-website-us-west-2.amazonaws.com/B321/0.jpg',
-                              Url='http://baidu.com'),
-                         dict(Title='title2', Description='描述',
-                              PicUrl='http://vegoplus.s3-website-us-west-2.amazonaws.com/B321/0.jpg',
-                              Url='http://baidu.com')]
+                items = kwargs.get('news')
                 xml['Articles'] = dict(item=items)
                 xml['ArticleCount'] = len(items)
                 pass
 
             return xmltodict.unparse({"xml": xml})
+
+        class New(BaseObject):
+            def __init__(self, title, pic_url, url, desc=""):
+                self.Title = title
+                self.PicUrl = pic_url
+                self.Url = url
+                self.Description = desc

@@ -28,6 +28,9 @@ def mp_callback():
             if msg.content == '1':
                 return msg.reply_text('1')
             elif msg.content == '2':
-                return msg.reply_news()
+                n1 = msg.New('t1',
+                             'http://vegoplus.s3-website-us-west-2.amazonaws.com/B321/0.jpg',
+                             'http://baidu.com')
+                return msg.reply_news(news=[n1,n1])
         return msg.reply_text('hahah')
     return ""
