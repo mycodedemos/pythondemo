@@ -24,6 +24,10 @@ def mp_callback():
 
     if request.method == 'POST':
         msg = mp.Message(request.data)
-
+        if msg.is_text():
+            if msg.content == '1':
+                return msg.reply_text('1')
+            elif msg.content == '2':
+                return msg.reply_news()
         return msg.reply_text('hahah')
     return ""

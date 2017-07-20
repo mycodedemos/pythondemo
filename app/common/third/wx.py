@@ -105,7 +105,12 @@ class MediaPlatform():
             return self.msg_type == self.MsgType.text.value
 
         def reply_text(self, content):
+            """回复文本"""
             return self._generator_reply(content)
+
+        def reply_news(self):
+            """回复图文消息"""
+            return self._generator_reply(msg_type=self.MsgType.news.value)
 
         def _generator_reply(self, *args, **kwargs):
             content = args[0] if args else kwargs.get('content')
@@ -120,5 +125,15 @@ class MediaPlatform():
 
             if msg_type == self.MsgType.text.value:
                 xml['Content'] = content
+            elif msg_type == self.MsgType.news.value:
+                items = [dict(Title='title1', Description='描述',
+                              PicUrl='http://vegoplus.s3-website-us-west-2.amazonaws.com/B321/0.jpg',
+                              Url='http://baidu.com'),
+                         dict(Title='title2', Description='描述',
+                              PicUrl='http://vegoplus.s3-website-us-west-2.amazonaws.com/B321/0.jpg',
+                              Url='http://baidu.com')]
+                xml['Articles'] = dict(item=items)
+                xml['ArticleCount'] = len(items)
+                pass
 
             return xmltodict.unparse({"xml": xml})
