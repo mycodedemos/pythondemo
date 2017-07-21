@@ -108,9 +108,9 @@ class MediaPlatform():
             self.owner_id = data['ToUserName']
             self.sender_id = data['FromUserName']
             self.msg_type = data['MsgType']
-            self.msg_id = data['MsgId']
-            self.content = data['Content'] if self.is_text() else None
-            self.event = data['Event'] if self.is_event() else None
+            self.msg_id = data.get('MsgId')
+            self.content = data.get('Content')
+            self.event = data.get('Event')
 
         def is_text(self):
             return self.msg_type == self.MsgType.text.value
