@@ -21,6 +21,7 @@ class Action(Enum):
     user_get = 'user/get'
     user_info = 'user/info'
     shorturl = 'shorturl'
+    create_menu = 'menu/create'
 
 
 class MediaPlatform():
@@ -66,6 +67,10 @@ class MediaPlatform():
         return self._post(Action.shorturl.value, action='long2short',
                           access_token=access_token, long_url=long_url)
 
+    def create_menu(self, access_token):
+        return self._post(Action.create_menu.value, access_token=access_token,
+                          button=[dict(type='click', name='测试', key='test')])
+
     def _auth_args(self):
         return {'appid': self.app_id, 'secret': self.app_secret}
 
@@ -77,10 +82,9 @@ class MediaPlatform():
 
     def _post(self, _action, **kwargs):
         url = self.origin_url.format(_action)
-        url = '{}?access_token={}'.format(url, kwargs.get('access_token'))
-        print(url)
+        params = {"access_token": kwargs.get('access_token')}
         kwargs.pop('access_token')
-        res = requests.post(url, json=kwargs)
+        res = requests.post(url, params=params, json=kwargs)
         self._print_res(res.json())
         return res.json()
 
@@ -93,17 +97,26 @@ class MediaPlatform():
         class MsgType(Enum):
             text = 'text'
             news = 'news'
+            event = 'event'
+
+        class Event(Enum):
+            subscribe = 'subscribe'
+            unsubscribe = 'unsubscribe'
 
         def __init__(self, xml_input):
             data = json.loads(json.dumps(xmltodict.parse(xml_input)))['xml']
             self.owner_id = data['ToUserName']
             self.sender_id = data['FromUserName']
             self.msg_type = data['MsgType']
-            self.content = data['Content']
             self.msg_id = data['MsgId']
+            self.content = data['Content'] if self.is_text() else None
+            self.event = data['Event'] if self.is_event() else None
 
         def is_text(self):
             return self.msg_type == self.MsgType.text.value
+
+        def is_event(self):
+            return self.msg_type == self.MsgType.event.value
 
         def reply_text(self, content):
             """回复文本"""
@@ -131,7 +144,6 @@ class MediaPlatform():
                 items = kwargs.get('news')
                 xml['Articles'] = dict(item=items)
                 xml['ArticleCount'] = len(items)
-                pass
 
             return xmltodict.unparse({"xml": xml})
 
