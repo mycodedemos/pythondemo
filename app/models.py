@@ -30,6 +30,17 @@ class Action(BaseModel, db.Model):
     create_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
 
 
+class Config(BaseModel, db.Model):
+    __tablename__ = 'config'
+    id = db.Column(db.INT, primary_key=True)
+    name = db.Column(db.VARCHAR, default="")
+    value = db.Column(db.VARCHAR, default="")
+    ext = db.Column(db.JSON, default={})
+    is_del = db.Column(db.INT, default=0)
+    create_ts = db.Column(db.TIMESTAMP)
+    update_ts = db.Column(db.TIMESTAMP)
+
+
 class Image(BaseModel, db.Model):
     __tablename__ = 'image'
     id = db.Column(db.VARCHAR, primary_key=True)
