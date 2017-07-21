@@ -27,7 +27,7 @@ def mp_callback():
         msg = mp.Message(request.data)
         if msg.is_text():
             if msg.content == '1':
-                return msg.reply_text(Config.query_item(name='wxtest').value)
+                return msg.reply_text(Config.query_item(name='wx_reply').ext['subscribe']['zh'])
             elif msg.content == '2':
                 n1 = msg.New('t1',
                              'http://vegoplus.s3-website-us-west-2.amazonaws.com/B321/0.jpg',
