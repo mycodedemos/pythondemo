@@ -34,3 +34,18 @@ CREATE TABLE `task_daily` (
   `update_ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `event`;
+CREATE TABLE `event` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(32) DEFAULT '',
+  `ip` varchar(32) DEFAULT '',
+  `type` varchar(32) NOT NULL DEFAULT '',
+  `resource_id` varchar(32) NOT NULL DEFAULT '',
+  `resource_type` varchar(32) NOT NULL DEFAULT '',
+  `ext` json DEFAULT NULL,
+  `is_del` tinyint(4) DEFAULT NULL,
+  `create_ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8mb4;
+

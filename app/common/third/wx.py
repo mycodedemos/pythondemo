@@ -98,19 +98,46 @@ class MediaPlatform():
             text = 'text'
             news = 'news'
             event = 'event'
+            image = 'image'
+            voice = 'voice'
+            video = 'video'
+            location = 'location'
+            link = 'link'
 
         class Event(Enum):
             subscribe = 'subscribe'
             unsubscribe = 'unsubscribe'
+            click = 'CLICK'
+            view = 'VIEW'
+            location = 'LOCATION'
 
         def __init__(self, xml_input):
-            data = json.loads(json.dumps(xmltodict.parse(xml_input)))['xml']
+            self.msg = json.loads(json.dumps(xmltodict.parse(xml_input)))
+            data = self.msg['xml']
             self.owner_id = data['ToUserName']
             self.sender_id = data['FromUserName']
             self.msg_type = data['MsgType']
+
+            self.event = data.get('Event')
+            self.event_key = data.get('EventKey')
+            # 用户发送消息给公众号会产生的字段
             self.msg_id = data.get('MsgId')
             self.content = data.get('Content')
-            self.event = data.get('Event')
+            self.pic_url = data.get('PicUrl')
+            self.media_id = data.get('MediaId')
+            self.thumb_media_id = data.get('ThumbMediaId')
+            self.media_format = data.get('Format')  # amr speex
+            self.location_x = data.get('Location_X')
+            self.location_y = data.get('Location_Y')
+            self.scale = data.get('Scale')  # 缩放范围
+            self.label = data.get('Label')  # 地理位置
+            self.title = data.get('Title')
+            self.description = data.get('Description')
+            self.url = data.get('Url')
+            # 用户点击菜单会产生的字段
+            self.latitude = data.get('Latitude')
+            self.longitude = data.get('Longitude')
+            self.precision = data.get('Precision')  # 位置精度
 
         def is_text(self):
             return self.msg_type == self.MsgType.text.value

@@ -100,6 +100,13 @@ class BaseModel(BaseObject):
         db.session.commit()
         return item
 
+    @classmethod
+    def create_if_not_exist(cls, **params):
+        item = cls.query_item(**params)
+        if not item:
+            item = cls.create(**params)
+        return item
+
     def create_self(self):
         db.session.add(self)
         db.session.commit()

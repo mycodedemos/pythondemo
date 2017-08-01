@@ -26,8 +26,49 @@ class Action(BaseModel, db.Model):
     action_type = db.Column(db.INT, default=BaseConfig.TYPE_ACTION_VIEW)
     item_id = db.Column(db.VARCHAR)
     item_type = db.Column(db.INT)
+    ext = db.Column(db.JSON, default={})
+    is_del = db.Column(db.INT, default=0)
+    create_ts = db.Column(db.TIMESTAMP)
+
+
+class ActionMovie(BaseModel, db.Model):
+    __tablename__ = 'action_movie'
+
+    id = db.Column(db.BIGINT, primary_key=True)
+    name = db.Column(db.String, default="")
+    source = db.Column(db.INT, default=0, doc='来源')
+    poster = db.Column(db.String, default="", doc="封面")
+    album_url = db.Column(db.String, default="", doc="专辑地址")
+    album_name = db.Column(db.String, default="", doc="专辑名称")
+    url = db.Column(db.String, default="", doc="地址")
+    download_url = db.Column(db.String, default="", doc="下载地址")
+    is_del = db.Column(db.INT, default=0)
+    create_ts = db.Column(db.TIMESTAMP, default=datetime.now())
+
+
+class Article(BaseModel, db.Model):
+    __tablename__ = 'article'
+    id = db.Column(db.BIGINT, primary_key=True)
+    name = db.Column(db.String, default="")
+    category = db.Column(db.INT, default="")
+    tags = db.Column(db.String, default="")
+    content = db.Column(db.String, default="")
+    is_del = db.Column(db.INT, default=0)
+    create_ts = db.Column(db.TIMESTAMP, default=datetime.now())
+    update_ts = db.Column(db.TIMESTAMP, default=datetime.now())
+
+    @property
+    def detail_url(self):
+        return url_for('article.article_detail', id=self.id)
+
+
+class Category(BaseModel, db.Model):
+    __tablename__ = 'category'
+    id = db.Column(db.INT, primary_key=True)
+    name = db.Column(db.String, default="")
     is_del = db.Column(db.INT, default=0)
     create_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
+    update_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
 
 
 class Config(BaseModel, db.Model):
@@ -39,6 +80,24 @@ class Config(BaseModel, db.Model):
     is_del = db.Column(db.INT, default=0)
     create_ts = db.Column(db.TIMESTAMP)
     update_ts = db.Column(db.TIMESTAMP)
+
+
+class Event(BaseModel, db.Model):
+    class Type(Enum):
+        wx_mp_msg = 'wx_mp_msg'
+
+    __tablename__ = 'event'
+    id = db.Column(db.INT, primary_key=True)
+    user_id = db.Column(db.VARCHAR, db.ForeignKey('user.id'), default="")
+    ip = db.Column(db.VARCHAR, default="")
+    resource_id = db.Column(db.VARCHAR, default="")
+    resource_type = db.Column(db.VARCHAR, default="")
+    type = db.Column(db.VARCHAR, default=Type.wx_mp_msg.value)
+    ext = db.Column(db.JSON, default={})
+    is_del = db.Column(db.INT, default=0)
+    create_ts = db.Column(db.TIMESTAMP)
+
+    user = db.relationship('User', backref=b('events', lazy='dynamic'))
 
 
 class Image(BaseModel, db.Model):
@@ -200,29 +259,38 @@ class TaskDaily(BaseModel, db.Model):
         return self
 
 
-class Article(BaseModel, db.Model):
-    __tablename__ = 'article'
+class User(BaseModel, db.Model):
+    __tablename__ = 'user'
+
     id = db.Column(db.BIGINT, primary_key=True)
     name = db.Column(db.String, default="")
-    category = db.Column(db.INT, default="")
-    tags = db.Column(db.String, default="")
-    content = db.Column(db.String, default="")
+    portrait = db.Column(db.String, default="")
+    gender = db.Column(db.INT, default=1)
+    email = db.Column(db.String, default="")
+    mobile = db.Column(db.String, default="")
+    ext = db.Column(db.String, default={})
     is_del = db.Column(db.INT, default=0)
-    create_ts = db.Column(db.TIMESTAMP, default=datetime.now())
-    update_ts = db.Column(db.TIMESTAMP, default=datetime.now())
-
-    @property
-    def detail_url(self):
-        return url_for('article.article_detail', id=self.id)
+    create_ts = db.Column(db.TIMESTAMP)
+    update_ts = db.Column(db.TIMESTAMP)
 
 
-class Category(BaseModel, db.Model):
-    __tablename__ = 'category'
-    id = db.Column(db.INT, primary_key=True)
+class UserThird(BaseModel, db.Model):
+    class Source(Enum):
+        wx = 'wx'
+
+    __tablename__ = 'user_third'
+    id = db.Column(db.BIGINT, primary_key=True)
+    user_id = db.Column(db.String, db.ForeignKey('user.id'),default="")
+    source = db.Column(db.String, default=Source.wx.value)
     name = db.Column(db.String, default="")
+    portrait = db.Column(db.String, default="")
+    gender = db.Column(db.INT, default=1)
+    ext = db.Column(db.String, default={})
     is_del = db.Column(db.INT, default=0)
-    create_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
-    update_ts = db.Column(db.TIMESTAMP, default=datetime.utcnow())
+    create_ts = db.Column(db.TIMESTAMP,default=datetime.now())
+    update_ts = db.Column(db.TIMESTAMP,default=datetime.now())
+
+    user = db.relationship('User', backref=b('thirds', lazy='dynamic'))
 
 
 class Video(BaseModel, db.Model):
@@ -326,18 +394,3 @@ class VideoSource(BaseModel, db.Model):
     @property
     def genres(self):
         return self.ext.get('genres')
-
-
-class ActionMovie(BaseModel, db.Model):
-    __tablename__ = 'action_movie'
-
-    id = db.Column(db.BIGINT, primary_key=True)
-    name = db.Column(db.String, default="")
-    source = db.Column(db.INT, default=0, doc='来源')
-    poster = db.Column(db.String, default="", doc="封面")
-    album_url = db.Column(db.String, default="", doc="专辑地址")
-    album_name = db.Column(db.String, default="", doc="专辑名称")
-    url = db.Column(db.String, default="", doc="地址")
-    download_url = db.Column(db.String, default="", doc="下载地址")
-    is_del = db.Column(db.INT, default=0)
-    create_ts = db.Column(db.TIMESTAMP, default=datetime.now())
