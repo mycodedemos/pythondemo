@@ -98,6 +98,7 @@ if __name__ == '__main__':
     # 820fb3cd26ad5e9bd8925ec34ded98a2
     # 820fb3cd26ad5e9bd8925ec34ded98a2
 
-    # res = Md5.encrypt_by_file('/Users/wxnacy/Documents/app-release-21-1.apk')
-    res = Md5.encrypt_by_url('https://s3-ap-northeast-1.amazonaws.com/i.vego.tv/app/app-release-21.apk')
-    print(res)
+    m1 = Md5.encrypt_by_file('/Users/wxnacy/Documents/app-release-21.apk')
+    print(m1)
+    m2 = Md5.encrypt_by_url('https://s3-ap-northeast-1.amazonaws.com/i.vego.tv/app/app-release-21.apk')
+    print(m2)

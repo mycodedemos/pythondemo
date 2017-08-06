@@ -7,6 +7,7 @@ __copyright__ = "Copyright of hopapapa (2017)."
 from app.common.base import BaseRequest
 from app.config import BaseConfig
 from app.run import app
+from app.views.api.user import user_bp
 from app.views.api.wx import wx_bp
 from flask import g
 from flask import request
@@ -41,4 +42,5 @@ def after_request(response):
 
 # api
 URL_PREFIX = BaseConfig.APPLICATION_ROOT
+app.register_blueprint(user_bp, url_prefix=URL_PREFIX)
 app.register_blueprint(wx_bp, url_prefix=URL_PREFIX)

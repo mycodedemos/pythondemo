@@ -52,6 +52,11 @@ class BaseTestCase(unittest.TestCase):
         self.assertEqual(BaseDict(ds).filter('users[id]'),
                          dict(users=[dict(id=1), dict(id=2)]))
 
+        user = dict(id=23, name='shining')
+        line = [user, user]
+        self.assertEqual([BaseDict(o).filter('id') for o in line],
+                         [dict(id=23), dict(id=23)])
+
 
 if __name__ == '__main__':
     unittest.main()
